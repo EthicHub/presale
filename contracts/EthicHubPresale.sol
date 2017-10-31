@@ -10,12 +10,11 @@ contract EthicHubPresale is CappedCrowdsale, RefundableCrowdsale {
    * @dev since our wei/token conversion rate is different, we implement it separatedly
    *      from Crowdsale
    * [EthicHubPresale description]
-   * @param       {[type]} uint256 start time in unix timestamp format
-   * @param       {[type]} uint256 end time in unix timestamp format
-   * @param       {[type]} uint256 minimum wei amount to consider the project funded.
-   * @param       {[type]} uint256 maximum amount the crowdsale will accept.
-   * @param       {[type]} address where funds are collected
-   * @constructor
+   * @param       _startTime start time in unix timestamp format
+   * @param       _endTime time in unix timestamp format
+   * @param       _goal minimum wei amount to consider the project funded.
+   * @param       _cap maximum amount the crowdsale will accept.
+   * @param       _wallet where funds are collected
    */
   function EthicHubPresale(uint256 _startTime, uint256 _endTime, uint256 _goal, uint256 _cap, address _wallet)
     CappedCrowdsale(_cap)
