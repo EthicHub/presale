@@ -20,7 +20,7 @@ contract EthicHubPresale is CappedCrowdsale, RefundableCrowdsale {
     CappedCrowdsale(_cap)
     FinalizableCrowdsale()
     RefundableCrowdsale(_goal)
-    Crowdsale(_startTime, _endTime, 0, _wallet)
+    Crowdsale(_startTime, _endTime, 1, _wallet)
   {
     //As goal needs to be met for a successful crowdsale
     //the value needs to less or equal than a cap which is limit for accepted funds
