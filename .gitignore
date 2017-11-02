@@ -59,3 +59,4 @@ typings/
 .env
 truffle.js
 migrations_helper.js
+build/
