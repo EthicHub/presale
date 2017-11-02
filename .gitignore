@@ -58,5 +58,4 @@ typings/
 # dotenv environment variables file
 .env
 truffle.js
-migrations_helper.js
 build/
