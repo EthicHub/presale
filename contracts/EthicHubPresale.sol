@@ -24,10 +24,5 @@ contract EthicHubPresale is CappedCrowdsale {
     require(_goal <= _cap);
   }
 
-  /**
-   * @dev Finalization logic
-   */
-  function finalization() internal {
-    super.finalization();
-  }
+  
 }
