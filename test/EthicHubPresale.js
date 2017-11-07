@@ -11,11 +11,30 @@ describe('Initialization', function() {
         Math.floor(Date.now() / 1000) + 1000,
         3,
         4,
-        accounts[1],
+        accounts[1]
       ).then( instance => {
         return instance.owner();
       }).then( owner => {
         assert.equal(accounts[0], owner);
+      });
+    });
+  });
+});
+
+describe('Hard Cap', (accounts) => {
+  //This test is to assure we are inheriting OpenZeppelin CappedCrowdsale
+  contract('EthicHubPresale', function(accounts) {
+    it("should set a hardcap When created", function() {
+      return EthicHubPresale.new(
+        Math.floor(Date.now() / 1000),
+        Math.floor(Date.now() / 1000) + 1000,
+        3,
+        4,
+        accounts[1]
+      ).then( instance => {
+        return instance.cap();
+      }).then( cap => {
+        assert.equal(4, cap);
       });
     });
   });
