@@ -16,9 +16,9 @@ module.exports = {
       minimum_cap: 1000,
       soft_cap: 9000,
       hard_cap: 12000,
-      getOwnerAddress: () => (getAccount(0)),
-      getFundsWallet: () => (getAccount(1))
+      getOwnerAddress: getAccount(0),
+      getFundsWallet: getAccount(1)
     }
   },
 
-}
+};
