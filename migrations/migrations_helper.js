@@ -5,7 +5,7 @@ Web3 = require('web3');
 //TODO include other networks'providers
 web3 = new Web3(new Web3.providers.HttpProvider(`http://${network.host}:${network.port}`));
 
-var getAccount = (index) => { return web3.eth.getAccounts().then(x => x[index]) };
+var getAccount = (index) => { return web3.eth.accounts[index] };
 
 
 module.exports = {

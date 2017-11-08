@@ -5,18 +5,17 @@ var EthicHubPresale = artifacts.require('../contracts/EthicHubPresale.sol');
 
 describe('Initialization', function() {
   contract('EthicHubPresale', function(accounts) {
-    it("should create EthicHubPresale and be the owner", function() {
-      return EthicHubPresale.new(
+    it("should create EthicHubPresale and be the owner", async function() {
+      let instance = await EthicHubPresale.new(
         Math.floor(Date.now() / 1000),
         Math.floor(Date.now() / 1000) + 1000,
         3,
         4,
-        accounts[1]
-      ).then( instance => {
-        return instance.owner();
-      }).then( owner => {
-        assert.equal(accounts[0], owner);
-      });
+        accounts[1]);
+      console.log(instance);
+      let owner = await instance.owner();
+      console.log(owner);
+      assert.equal(accounts[0], owner);
     });
   });
 });

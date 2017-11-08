@@ -1,9 +1,10 @@
 pragma solidity ^0.4.15;
 
 import 'zeppelin-solidity/contracts/crowdsale/CappedCrowdsale.sol';
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 
-contract EthicHubPresale is CappedCrowdsale {
+contract EthicHubPresale is CappedCrowdsale, Ownable {
 
   /**
    * @dev since our wei/token conversion rate is different, we implement it separatedly
@@ -24,5 +25,5 @@ contract EthicHubPresale is CappedCrowdsale {
     require(_goal <= _cap);
   }
 
-  
+
 }
