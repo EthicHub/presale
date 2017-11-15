@@ -6,12 +6,12 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
 /**
- * @title TokenVesting
+ * @title IntervalTokenVesting
  * @dev A token holder contract that can release its token balance gradually like a
  * typical vesting scheme, with a period duration and number of periods. Optionally revocable by the
  * owner.
  */
-contract TokenVesting is Ownable {
+contract IntervalTokenVesting is Ownable {
   using SafeMath for uint256;
   using SafeERC20 for ERC20Basic;
 
