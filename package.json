@@ -2,20 +2,19 @@
   "name": "ethichub_presale",
   "version": "1.0.0",
   "description": "The presale contracts for Ethic Hub",
-  "main": "truffle.js",
-  "directories": {
-    "test": "test"
-  },
-  "dependencies": {
-    "web3": "0.20.0",
-    "zeppelin-solidity": "^1.3.0"
+  "scripts": {
+    "test": "scripts/test.sh",
+    "console": "truffle console",
+    "coverage": "scripts/coverage.sh"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
-  },
-  "scripts": {
-    "test": "truffle test"
+    "babel-preset-env": "^1.6.1",
+    "ethereumjs-testrpc": "^6.0.2",
+    "solidity-coverage": "^0.4.0",
+    "truffle": "^4.0.1",
+    "truffle-hdwallet-provider": "0.0.3",
+    "zeppelin-solidity": "git+https://github.com/EthicHub/zeppelin-solidity.git#develop"
   },
   "repository": {
     "type": "git",
@@ -26,12 +25,15 @@
     "tokensale",
     "ico",
     "ethereum",
-    "solidity"
+    "solidity",
+    "zeppelin",
+    "ethichub"
   ],
   "author": "Raúl Martínez",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/EthicHub/presale/issues"
   },
-  "homepage": "https://github.com/EthicHub/presale#readme"
+  "homepage": "https://github.com/EthicHub/presale#readme",
+  "dependencies": {}
 }
