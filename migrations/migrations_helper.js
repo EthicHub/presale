@@ -1,9 +1,9 @@
 const truffle = require('../truffle.js');
 const network = truffle.networks[truffle.current_network];
 
-Web3 = require('web3');
+var Web3 = require('web3');
 //TODO include other networks'providers
-web3 = new Web3(new Web3.providers.HttpProvider(`http://${network.host}:${network.port}`));
+var web3 = new Web3(new Web3.providers.HttpProvider(`http://${network.host}:${network.port}`));
 
 var getAccount = (index) => { return web3.eth.accounts[index] };
 
