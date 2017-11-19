@@ -10,9 +10,9 @@ import latestTime from './helpers/latestTime';
 import {increaseTimeTo, duration} from './helpers/increaseTime';
 
 const MintableToken = artifacts.require('zeppelin-solidity/contracts/token/MintableToken');
-const TokenVesting = artifacts.require('./TokenVesting');
+const IntervalTokenVesting = artifacts.require('./IntervalTokenVesting');
 
-contract('TokenVesting', function (accounts) {
+contract('IntervalTokenVesting', function (accounts) {
 
   const amount = new BigNumber(1000);
   var owner = accounts[0];
@@ -23,7 +23,7 @@ contract('TokenVesting', function (accounts) {
     this.start = latestTime() + duration.minutes(2); // +2 minute so it starts after contract instantiation
     this.periodDuration = duration.weeks(26);
     this.numPeriods = 4;
-    this.vesting = await TokenVesting.new(beneficiary, this.start, this.periodDuration, this.numPeriods, true, { from: owner });
+    this.vesting = await IntervalTokenVesting.new(beneficiary, this.start, this.periodDuration, this.numPeriods, true, { from: owner });
     await this.token.mint(this.vesting.address, amount, { from: owner });
 
   });
@@ -81,7 +81,7 @@ contract('TokenVesting', function (accounts) {
   });
 
   it('should fail to be revoked by owner if revocable not set', async function () {
-    const vesting = await TokenVesting.new(beneficiary, this.start, this.periodDuration, this.numPeriods, false, { from: owner });
+    const vesting = await IntervalTokenVesting.new(beneficiary, this.start, this.periodDuration, this.numPeriods, false, { from: owner });
     await vesting.revoke(this.token.address, { from: owner }).should.be.rejectedWith(EVMThrow);
   });
 
