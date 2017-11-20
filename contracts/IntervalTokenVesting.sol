@@ -39,7 +39,7 @@ contract IntervalTokenVesting is Ownable {
    * @param _numPeriods number of periods in which the tokens will vest
    * @param _revocable whether the vesting is revocable or not
    */
-  function TokenVesting(address _beneficiary, uint256 _start, uint256 _periodDuration, uint256 _numPeriods, bool _revocable) {
+  function IntervalTokenVesting(address _beneficiary, uint256 _start, uint256 _periodDuration, uint256 _numPeriods, bool _revocable) {
     require(_beneficiary != address(0));
     require(_periodDuration > 0);
     require(_numPeriods > 0 );
