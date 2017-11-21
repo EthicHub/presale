@@ -33,8 +33,8 @@ contract EthicHubPresale is CappedCrowdsale, Ownable {
     require(_goal <= _cap);
   }
 
-  function createVesting(address beneficiary, uint256 startTime) external onlyOwner {
-    new IntervalTokenVesting(beneficiary, startTime, vestingNumPeriods, vestingPeriodDuration, vestingRevocable);
+  function createVesting(address beneficiary, uint256 startTime) external onlyOwner returns(IntervalTokenVesting){
+    return new IntervalTokenVesting(beneficiary, startTime, vestingNumPeriods, vestingPeriodDuration, vestingRevocable);
   }
 
   function revoceVesting (address vestingAddress){
