@@ -60,21 +60,20 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
     })
 
     it('should calculate tokens', async function () {
-
+      var tokens = 0
       for (var i = 0; i <= numIntervals; i++) {
         await increaseTimeTo(this.startTime + duration.weeks(2*i))
         const investmentAmount = ether(0.000000000000000001);
         console.log("*** Amount: " + investmentAmount);
-        let tokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
+        tokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
         console.log("*** COMPOSITION Tokens: " + tokens);
         let tx = await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
         console.log("*** COMPOSITION FIXED POOL: " + tx.receipt.gasUsed + " gas used.");
 
       }
       await increaseTimeTo(this.afterEndTime);
-      await this.tokenDistribution.compensate(investor).should.be.fulfilled;
-      const totalSupply = await this.token.totalSupply();
-      (await this.token.balanceOf(investor)).should.be.bignumber.equal(totalSupply);
+      await this.tokenDistribution.compensate(investor, tokens).should.be.fulfilled;
+      (await this.token.balanceOf(investor)).should.be.bignumber.equal(tokens);
 
     })
 

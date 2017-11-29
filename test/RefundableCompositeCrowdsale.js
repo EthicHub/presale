@@ -12,12 +12,12 @@ require('chai')
   .should()
 
 const RefundableCompositeCrowdsale = artifacts.require('./helpers/RefundableCompositeCrowdsaleImpl.sol')
-// TODO DistributionMock
-const FixedRateTokenDistribution = artifacts.require('FixedRateTokenDistributionStrategy')
+const TokenDistribution = artifacts.require('FixedPoolWithDiscountsTokenDistributionStrategy')
+const SimpleToken = artifacts.require('SimpleToken')
 
 contract('RefundableCompositeCrowdsale', function ([_, owner, wallet, investor]) {
 
-  const rate = new BigNumber(1000)
+  const RATE = new BigNumber(4000)
   const goal = ether(800)
   const lessThanGoal = ether(750)
 
@@ -30,7 +30,9 @@ contract('RefundableCompositeCrowdsale', function ([_, owner, wallet, investor])
     this.startTime = latestTime() + duration.weeks(1)
     this.endTime =   this.startTime + duration.weeks(1)
     this.afterEndTime = this.endTime + duration.seconds(1)
-    this.tokenDistribution = await FixedRateTokenDistribution.new(rate);
+    const fixedPoolToken = await SimpleToken.new();
+    const totalSupply = await fixedPoolToken.totalSupply();
+    this.tokenDistribution = await TokenDistribution.new(fixedPoolToken.address, RATE);
 
     this.crowdsale = await RefundableCompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address, goal, {from: owner})
   })

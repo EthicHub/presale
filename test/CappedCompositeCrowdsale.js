@@ -12,14 +12,12 @@ require('chai')
   .should()
 
 const CappedCompositeCrowdsale = artifacts.require('./helpers/CappedCompositeCrowdsaleImpl.sol')
-// TODO DistributionMock
-const FixedRateTokenDistribution = artifacts.require('FixedRateTokenDistributionStrategy')
-//const MintableToken = artifacts.require('MintableToken')
+const TokenDistribution = artifacts.require('FixedPoolWithDiscountsTokenDistributionStrategy')
+const SimpleToken = artifacts.require('SimpleToken')
 
 contract('CappedCompositeCrowdsale', function ([_, wallet]) {
 
-  const rate = new BigNumber(1000)
-
+  const RATE = new BigNumber(4000)
   const cap = ether(300)
   const lessThanCap = ether(60)
 
@@ -31,7 +29,9 @@ contract('CappedCompositeCrowdsale', function ([_, wallet]) {
   beforeEach(async function () {
     this.startTime = latestTime() + duration.weeks(1);
     this.endTime =   this.startTime + duration.weeks(1);
-    this.tokenDistribution = await FixedRateTokenDistribution.new(rate);
+    const fixedPoolToken = await SimpleToken.new();
+    const totalSupply = await fixedPoolToken.totalSupply();
+    this.tokenDistribution = await TokenDistribution.new(fixedPoolToken.address, RATE);
 
     this.crowdsale = await CappedCompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address, cap)
   })

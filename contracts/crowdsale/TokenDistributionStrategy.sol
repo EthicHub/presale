@@ -30,7 +30,7 @@ contract TokenDistributionStrategy {
     crowdsale = _crowdsale;
   }
 
-  function distributeTokens(address beneficiary, uint amount) onlyCrowdsale {}
+  function distributeTokens(address beneficiary, uint amount);
 
   function calculateTokenAmount(uint256 weiAmount) view returns (uint256 amount);
 
