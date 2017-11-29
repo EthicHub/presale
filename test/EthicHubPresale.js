@@ -12,7 +12,7 @@ const should = require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should()
 
-const FixedPoolWithDiscountsTokenDistributionMock = artifacts.require('./helpers/FixedPoolWithDiscountsTokenDistributionMock');
+const EthicHubTokenDistribution = artifacts.require('EthicHubTokenDistributionStrategy');
 const Token = artifacts.require('ERC20')
 
 const SimpleToken = artifacts.require('SimpleToken')
@@ -34,12 +34,12 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
 
 
   beforeEach(async function () {
-    this.startTime = latestTime() + duration.weeks(1);
-    this.endTime = this.startTime + duration.weeks(8);
+    this.startTime = latestTime();
+    this.endTime = this.startTime + duration.days(7);
 
     const fixedPoolToken = await SimpleToken.new();
     const totalSupply = await fixedPoolToken.totalSupply();
-    this.tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
+    this.tokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE);
 
     this.crowdsale = await EthicHubPresale.new(this.startTime, this.endTime, goal, cap, wallet, this.tokenDistribution.address);
     await fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
@@ -50,11 +50,13 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
   describe('Initialization', function() {
 
     beforeEach(async function () {
-      this.afterEndTime = this.endTime + duration.seconds(1);
-      for (var i = 0; i <= numIntervals; i++) {
-        this.tokenDistribution.addInterval(this.startTime + duration.weeks(2*i+1), (numIntervals-i)*percentageDiscount);
-      }
-    //  await increaseTimeTo(this.startTime)
+      await increaseTimeTo(this.startTime);
+      await this.tokenDistribution.initIntervals();
+      console.log(await this.tokenDistribution.getIntervals());
+      //this.afterEndTime = this.endTime + duration.seconds(1);
+      //for (var i = 0; i <= numIntervals; i++) {
+      //  this.tokenDistribution.addInterval(this.startTime + duration.weeks(2*i+1), (numIntervals-i)*percentageDiscount);
+      //}
     })
 
     it('should fulfilled initiate with intervals token distribution', async function () {
@@ -72,6 +74,40 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
     it("should set a goal when created", async function() {
       (await this.crowdsale.goal()).should.be.bignumber.equal(goal);
     });
+  });
+
+  describe('proving the intervals of the distribution', function () {
+
+    beforeEach(async function () {
+      await increaseTimeTo(this.startTime);
+      console.log('Pasa');
+      //this.afterEndTime = this.endTime + duration.seconds(1);
+      //for (var i = 0; i <= numIntervals; i++) {
+      //  this.tokenDistribution.addInterval(this.startTime + duration.weeks(2*i+1), (numIntervals-i)*percentageDiscount);
+      //}
+      await this.tokenDistribution.initIntervals();
+      console.log(await this.tokenDistribution.getIntervals());
+
+    })
+
+    it('should calculate tokens', async function () {
+      var tokens = 0
+      for (var i = 0; i <= numIntervals; i++) {
+        await increaseTimeTo(this.startTime + duration.weeks(2*i))
+        const investmentAmount = ether(0.000000000000000001);
+        console.log("*** Amount: " + investmentAmount);
+        tokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
+        console.log("*** COMPOSITION Tokens: " + tokens);
+        let tx = await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
+        console.log("*** COMPOSITION FIXED POOL: " + tx.receipt.gasUsed + " gas used.");
+
+      }
+      await increaseTimeTo(this.afterEndTime);
+      await this.tokenDistribution.compensate(investor, tokens).should.be.fulfilled;
+      (await this.token.balanceOf(investor)).should.be.bignumber.equal(tokens);
+
+    })
+
   });
 
 });
