@@ -11,12 +11,12 @@ const should = require('chai')
   .should()
 
 const FinalizableCompositeCrowdsale = artifacts.require('./helpers/FinalizableCompositeCrowdsaleImpl.sol')
-// TODO DistributionMock
-const FixedRateTokenDistribution = artifacts.require('FixedRateTokenDistributionStrategy')
+const TokenDistribution = artifacts.require('FixedPoolWithDiscountsTokenDistributionStrategy')
+const SimpleToken = artifacts.require('SimpleToken')
 
 contract('FinalizableCompositeCrowdsale', function ([_, owner, wallet, thirdparty]) {
 
-  const rate = new BigNumber(1000)
+  const RATE = new BigNumber(4000)
 
   before(async function() {
     //Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
@@ -27,7 +27,9 @@ contract('FinalizableCompositeCrowdsale', function ([_, owner, wallet, thirdpart
     this.startTime = latestTime() + duration.weeks(1)
     this.endTime =   this.startTime + duration.weeks(1)
     this.afterEndTime = this.endTime + duration.seconds(1)
-    this.tokenDistribution = await FixedRateTokenDistribution.new(rate);
+    const fixedPoolToken = await SimpleToken.new();
+    const totalSupply = await fixedPoolToken.totalSupply();
+    this.tokenDistribution = await TokenDistribution.new(fixedPoolToken.address, RATE);
 
 
     this.crowdsale = await FinalizableCompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address, {from: owner})
