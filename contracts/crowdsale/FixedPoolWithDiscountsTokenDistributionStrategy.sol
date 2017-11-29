@@ -55,8 +55,7 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
   }
 
   // Init intervals
-  function initIntervals() validateIntervals view {
-  }
+  function initIntervals() validateIntervals view {}
 
   function calculateTokenAmount(uint256 _weiAmount) view returns (uint256 tokens) {
     // calculate discount in function of the time
@@ -76,10 +75,9 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
     totalContributed = totalContributed.add(_tokenAmount);
   }
 
-  function compensate(address _beneficiary) {
+  function compensate(address _beneficiary, uint256 _amount) {
     require(crowdsale.hasEnded());
-    uint256 amount = contributions[_beneficiary].mul(token.totalSupply()).div(totalContributed);
-    if (token.transfer(_beneficiary, amount)) {
+    if (token.transfer(_beneficiary, _amount)) {
       contributions[_beneficiary] = 0;
     }
   }
