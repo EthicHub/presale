@@ -2,6 +2,7 @@ pragma solidity ^0.4.18;
 
 import './crowdsale/FixedPoolWithDiscountsTokenDistributionStrategy.sol';
 import './crowdsale/WhitelistedDistributionStrategy.sol';
+import './EthixToken.sol';
 
 /**
  * @title EthicHubTokenDistributionStrategy
@@ -15,7 +16,7 @@ import './crowdsale/WhitelistedDistributionStrategy.sol';
 contract EthicHubTokenDistributionStrategy is WhitelistedDistributionStrategy {
   uint256 constant RATE_FOR_INVESTOR = 25;
 
-  function EthicHubTokenDistributionStrategy(ERC20 _token, uint256 _rate)
+  function EthicHubTokenDistributionStrategy(EthixToken _token, uint256 _rate)
            WhitelistedDistributionStrategy(RATE_FOR_INVESTOR)
            FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) public
   {
