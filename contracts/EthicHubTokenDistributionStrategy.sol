@@ -1,6 +1,7 @@
 pragma solidity ^0.4.18;
 
 import './crowdsale/FixedPoolWithDiscountsTokenDistributionStrategy.sol';
+import './crowdsale/WhitelistedDistributionStrategy.sol';
 
 /**
  * @title FixedRateTokenDistributionStrategy
@@ -10,10 +11,16 @@ import './crowdsale/FixedPoolWithDiscountsTokenDistributionStrategy.sol';
  * After the crowdsale has ended the contract compensate buyers proportionally to their contributions.
  * This class is abstract, the intervals have to be defined by subclassing
  */
-contract EthicHubTokenDistributionStrategy is FixedPoolWithDiscountsTokenDistributionStrategy {
+contract EthicHubTokenDistributionStrategy is FixedPoolWithDiscountsTokenDistributionStrategy, WhitelistedDistributionStrategy {
+  uint256 constant RATE_FOR_INVESTOR = 25;
 
   function EthicHubTokenDistributionStrategy(ERC20 _token, uint256 _rate)
-           FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) public {}
+           WhitelistedDistributionStrategy(RATE_FOR_INVESTOR)
+           FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) public
+  {
+  
+  }
+
 
   // Init intervals
   function initIntervals() {
