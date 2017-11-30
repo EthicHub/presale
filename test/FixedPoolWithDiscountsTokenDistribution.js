@@ -30,8 +30,8 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
 
 
   beforeEach(async function () {
-    this.startTime = latestTime() + duration.weeks(1);
-    this.endTime = this.startTime + duration.weeks(8);
+    this.startTime = latestTime() + duration.days(1);
+    this.endTime = this.startTime + duration.days(8);
 
     const fixedPoolToken = await SimpleToken.new();
     const totalSupply = await fixedPoolToken.totalSupply();
@@ -52,7 +52,7 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
       this.afterEndTime = this.endTime + duration.seconds(1);
 
       for (var i = 0; i <= numIntervals; i++) {
-        this.tokenDistribution.addInterval(this.startTime + duration.weeks(2*i+1), (numIntervals-i)*percentageDiscount);
+        this.tokenDistribution.addInterval(this.startTime + duration.days(2*i+1), (numIntervals-i)*percentageDiscount);
       }
       await this.tokenDistribution.initIntervals();
       //console.log(await this.tokenDistribution.getIntervals());
@@ -62,7 +62,7 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
     it('should calculate tokens', async function () {
       var tokens = 0
       for (var i = 0; i <= numIntervals; i++) {
-        await increaseTimeTo(this.startTime + duration.weeks(2*i))
+        await increaseTimeTo(this.startTime + duration.days(2*i))
         const investmentAmount = ether(0.000000000000000001);
         console.log("*** Amount: " + investmentAmount);
         tokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
