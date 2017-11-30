@@ -18,11 +18,14 @@ contract EthicHubTokenDistributionStrategy is FixedPoolWithDiscountsTokenDistrib
            WhitelistedDistributionStrategy(RATE_FOR_INVESTOR)
            FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) public
   {
-    //initIntervals();
+  
   }
 
+
   // Init intervals
-  function initIntervals() validateIntervals {
+  function initIntervals() {
+    //super.initIntervals();
+    require(discountIntervals.length == 0);
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 1 days,10));
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 2 days,8));
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 3 days,6));

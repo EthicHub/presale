@@ -12,6 +12,7 @@ const should = require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should()
 
+//const FixedPoolWithDiscountsTokenDistributionMock = artifacts.require('./helpers/FixedPoolWithDiscountsTokenDistributionMock');
 const EthicHubTokenDistribution = artifacts.require('EthicHubTokenDistributionStrategy');
 const Token = artifacts.require('ERC20')
 
@@ -34,12 +35,13 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
 
 
   beforeEach(async function () {
-    this.startTime = latestTime();
-    this.endTime = this.startTime + duration.days(7);
+    this.startTime = latestTime() + duration.days(1);
+    this.endTime = this.startTime + duration.days(40);
 
     const fixedPoolToken = await SimpleToken.new();
     const totalSupply = await fixedPoolToken.totalSupply();
     this.tokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE);
+    //this.tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
 
     this.crowdsale = await EthicHubPresale.new(this.startTime, this.endTime, goal, cap, wallet, this.tokenDistribution.address);
     await fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
@@ -48,16 +50,6 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
   })
 
   describe('Initialization', function() {
-
-    beforeEach(async function () {
-      await increaseTimeTo(this.startTime);
-      await this.tokenDistribution.initIntervals();
-      console.log(await this.tokenDistribution.getIntervals());
-      //this.afterEndTime = this.endTime + duration.seconds(1);
-      //for (var i = 0; i <= numIntervals; i++) {
-      //  this.tokenDistribution.addInterval(this.startTime + duration.weeks(2*i+1), (numIntervals-i)*percentageDiscount);
-      //}
-    })
 
     it('should fulfilled initiate with intervals token distribution', async function () {
       await this.tokenDistribution.initIntervals().should.be.fulfilled;
@@ -79,27 +71,22 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
   describe('proving the intervals of the distribution', function () {
 
     beforeEach(async function () {
-      await increaseTimeTo(this.startTime);
-      console.log('Pasa');
-      //this.afterEndTime = this.endTime + duration.seconds(1);
-      //for (var i = 0; i <= numIntervals; i++) {
-      //  this.tokenDistribution.addInterval(this.startTime + duration.weeks(2*i+1), (numIntervals-i)*percentageDiscount);
-      //}
+      this.afterEndTime = this.endTime + duration.seconds(1);
       await this.tokenDistribution.initIntervals();
-      console.log(await this.tokenDistribution.getIntervals());
-
     })
 
     it('should calculate tokens', async function () {
+      var [endPeriods, discounts] = await this.tokenDistribution.getIntervals();
       var tokens = 0
-      for (var i = 0; i <= numIntervals; i++) {
-        await increaseTimeTo(this.startTime + duration.weeks(2*i))
-        const investmentAmount = ether(0.000000000000000001);
-        console.log("*** Amount: " + investmentAmount);
+      const investmentAmount = ether(0.000000000000000001);
+      console.log(`*** Amount:  ${investmentAmount}`);
+      for (var i = 0; i <= endPeriods.length; i++) {
+      //for (var i = 0; i <= 10; i++) {
+        await increaseTimeTo(this.startTime + duration.days(i + 0.5))
         tokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
-        console.log("*** COMPOSITION Tokens: " + tokens);
+      console.log(`*** Tokens:  ${tokens}`);
         let tx = await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
-        console.log("*** COMPOSITION FIXED POOL: " + tx.receipt.gasUsed + " gas used.");
+        console.log(`*** Gas used: ${tx.receipt.gasUsed}`);
 
       }
       await increaseTimeTo(this.afterEndTime);
@@ -109,5 +96,13 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
     })
 
   });
+  // TODO Que no hayamos llegadp al min cap y devolver pasta
+  // TODO Whitelist
+  // TODO Si llegamos al maxcap
+  // TODO Que nos quedemos entre medias
+  // TODO compensar tokens
+  // TODO Pausable
+  // TODO LLegar al max antes de tiempo
+  // TODO Intervals se settea una vez y solo el owner
 
 });
