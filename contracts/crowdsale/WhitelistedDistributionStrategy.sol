@@ -1,17 +1,22 @@
-pragma solidity 0.4.15;
+pragma solidity 0.4.18;
 
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+import './FixedPoolWithDiscountsTokenDistributionStrategy.sol';
 
 /**
- * @title WhitelistedCrowdsale
- * @dev This is an extension to add whitelist to a crowdsale
+ * @title WhitelistedDistributionStrategy 
+ * @dev This is an extension to add whitelist to a token distributionStrategy
  *
  */
-contract WhitelistedCrowdsale is Ownable {
-    
+contract WhitelistedDistributionStrategy is Ownable, FixedPoolWithDiscountsTokenDistributionStrategy{
+    uint256 rate_for_investor; 
     mapping(address=>uint) public registeredAmount;
 
     event RegistrationStatusChanged(address target, bool isRegistered);
+
+    function WhitelistedDistributionStrategy(uint256 _rate_for_investor){
+        rate_for_investor = _rate_for_investor;
+    }
 
     /**
      * @dev Changes registration status of an address for participation.
@@ -22,7 +27,7 @@ contract WhitelistedCrowdsale is Ownable {
         public
         onlyOwner
     {
-        registered[target] = amount;
+        registeredAmount[target] = amount;
         if (amount > 0){
             RegistrationStatusChanged(target, true);
         }else{
@@ -35,7 +40,7 @@ contract WhitelistedCrowdsale is Ownable {
      * @param targets Addresses that will be registered/deregistered.
      * @param amounts the list of amounts of eth for every investor to invest for a investor discount.
      */
-    function changeRegistrationStatuses(address[] targets, uint256[] amounts )
+    function changeRegistrationStatuses(address[] targets, uint256[] amounts)
         public
         onlyOwner
     {
@@ -45,17 +50,17 @@ contract WhitelistedCrowdsale is Ownable {
     }
 
     /**
-     * @dev overriding Crowdsale#getRage for whilelist investors
-     * @return discounted rate if it applies fot the investor
-     * WIP
-     * WIP
+     * @dev overriding calculateTokenAmount for whilelist investors
+     * @return discounted rate if it applies for the investor, 
+     * otherwise, return token amount according to super class
      */
 
-    function calculateTokenAmount(uint256 _weiAmount, uint256 _rate) constant returns (uint256 tokens) {
-        if (registered[msg.sender] > 0){
-            tokens = _weiAmount.mul(_rate).mul(RATE_FOR_INVESTOR);
+    function calculateTokenAmount(uint256 _weiAmount) view returns (uint256 tokens) {
+        if (_weiAmount >= registeredAmount[msg.sender] && registeredAmount[msg.sender] > 0 ){
+            tokens = _weiAmount.mul(rate);
+            tokens = tokens.add(tokens.mul(rate_for_investor).div(100));
         }else{
-            tokens = _weiAmount.mul(_rate);
+            tokens = super.calculateTokenAmount(_weiAmount);
         }
     }
 }
