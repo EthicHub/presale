@@ -13,13 +13,12 @@ import './crowdsale/FixedPoolWithDiscountsTokenDistributionStrategy.sol';
 contract EthicHubTokenDistributionStrategy is FixedPoolWithDiscountsTokenDistributionStrategy {
 
   function EthicHubTokenDistributionStrategy(ERC20 _token, uint256 _rate)
-           FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) public
-  {
-    //initIntervals();
-  }
+           FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) public {}
 
   // Init intervals
-  function initIntervals() validateIntervals {
+  function initIntervals() {
+    //super.initIntervals();
+    require(discountIntervals.length == 0);
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 1 days,10));
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 2 days,8));
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 3 days,6));
