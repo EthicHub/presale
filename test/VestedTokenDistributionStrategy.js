@@ -2,7 +2,7 @@ import ether from './helpers/ether'
 import {advanceBlock} from './helpers/advanceToBlock'
 import {increaseTimeTo, duration} from './helpers/increaseTime'
 import latestTime from './helpers/latestTime'
-const EVMThrow = require('./helpers/EVMThrow.js')
+const EVMRevert = require('./helpers/EVMRevert.js')
 
 const BigNumber = web3.BigNumber
 
@@ -65,18 +65,20 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       resultDuration.should.be.bignumber.equal(expectedDuration);
     });
 
+    it('should set vesting periods only once');
+
     it('should fail when setting date previous to end', async function() {
       const badTime = this.endTime - duration.seconds(1);
-      this.tokenDistribution.configureVesting(badTime,this.vestingDuration).should.eventually.be.rejectedWith(EVMThrow);
+      this.tokenDistribution.configureVesting(badTime,this.vestingDuration).should.eventually.be.rejectedWith(EVMRevert);
     });
 
     it('should fail when setting incorrect duration', async function() {
-      this.tokenDistribution.configureVesting(this.vestingStart,0).should.eventually.be.rejectedWith(EVMThrow);
+      this.tokenDistribution.configureVesting(this.vestingStart,0).should.eventually.be.rejectedWith(EVMRevert);
     });
 
     it('should fail to configure vesting if not owner', async function() {
       const resultOwner = await this.tokenDistribution.owner();
-      await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration,{from: thirdParty}).should.be.rejectedWith(EVMThrow);
+      await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration,{from: thirdParty}).should.be.rejectedWith(EVMRevert);
     });
 
 
@@ -143,7 +145,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount);
       increaseTimeTo(this.vestingStart + this.vestingDuration);
 
-      await this.tokenDistribution.compensate(investor,{from:investor}).should.be.rejectedWith(EVMThrow);
+      await this.tokenDistribution.compensate(investor,{from:investor}).should.be.rejectedWith(EVMRevert);
 
     });
 

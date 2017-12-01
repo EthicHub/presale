@@ -62,11 +62,14 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
     it('should fulfilled initiate with intervals token distribution', async function () {
       await this.tokenDistribution.initIntervals().should.be.fulfilled;
     })
+    it('should init intervals only once');
+    it('should fail to intervals if not owner');
 
     it("should create the owner", async function() {
       (await this.crowdsale.owner()).should.be.equal(owner);
     })
 
+    it("should transfer ownership");
 
 
     it("should set a cap when created", async function() {
@@ -107,6 +110,31 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
     })
 
   });
+
+  describe('Vesting periods', function () {
+    it('should set correct vesting periods ', async function() {
+      const tx = await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
+      const expectedStart = new BigNumber(this.vestingStart);
+      const resultStart = await this.tokenDistribution.vestingStart();
+      resultStart.should.be.bignumber.equal(expectedStart);
+      const expectedDuration = new BigNumber(this.vestingDuration);
+      const resultDuration = await this.tokenDistribution.vestingDuration();
+
+      resultDuration.should.be.bignumber.equal(expectedDuration);
+    });
+
+  });
+
+  describe('Crowdsale', function() {
+    it('should refund investors if goal is not reached in time');
+    it('should calculate correct tokens for whitelists');
+    it('should have a succesfull crowdsale not reaching cap and compensating vested tokens');
+    it('should have a succesfull crowdsale reaching cap, rejecting further buys and compensating vested tokens');
+
+    it('should pause');
+
+  });
+
   // TODO Que no hayamos llegadp al min cap y devolver pasta
   // TODO Whitelist
   // TODO Si llegamos al maxcap
