@@ -2,28 +2,31 @@ pragma solidity ^0.4.18;
 
 import './crowdsale/FixedPoolWithDiscountsTokenDistributionStrategy.sol';
 import './crowdsale/WhitelistedDistributionStrategy.sol';
+import './EthixToken.sol';
 
 /**
- * @title FixedRateTokenDistributionStrategy
+ * @title EthicHubTokenDistributionStrategy
  * @dev Strategy that distributes a fixed number of tokens among the contributors,
  * with a percentage deppending in when the contribution is made, defined by periods.
  * It's done in two steps. First, it registers all of the contributions while the sale is active.
  * After the crowdsale has ended the contract compensate buyers proportionally to their contributions.
  * This class is abstract, the intervals have to be defined by subclassing
+ * Several whitelists are enabled
  */
-contract EthicHubTokenDistributionStrategy is FixedPoolWithDiscountsTokenDistributionStrategy, WhitelistedDistributionStrategy {
+contract EthicHubTokenDistributionStrategy is WhitelistedDistributionStrategy {
+  //TODO hardcoding of parameters
   uint256 constant RATE_FOR_INVESTOR = 25;
 
-  function EthicHubTokenDistributionStrategy(ERC20 _token, uint256 _rate)
-           WhitelistedDistributionStrategy(RATE_FOR_INVESTOR)
-           FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) public
+  function EthicHubTokenDistributionStrategy(EthixToken _token, uint256 _rate, uint256 _rateForInvestor)
+           WhitelistedDistributionStrategy(_token, _rate, _rateForInvestor)
+           public
   {
-  
+
   }
 
 
   // Init intervals
-  function initIntervals() {
+  function initIntervals() validateIntervals {
     //super.initIntervals();
     require(discountIntervals.length == 0);
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 1 days,10));

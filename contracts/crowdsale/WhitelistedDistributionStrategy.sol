@@ -1,20 +1,21 @@
 pragma solidity 0.4.18;
 
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-import './FixedPoolWithDiscountsTokenDistributionStrategy.sol';
+import './VestedTokenDistributionStrategy.sol';
 
 /**
- * @title WhitelistedDistributionStrategy 
+ * @title WhitelistedDistributionStrategy
  * @dev This is an extension to add whitelist to a token distributionStrategy
  *
  */
-contract WhitelistedDistributionStrategy is Ownable, FixedPoolWithDiscountsTokenDistributionStrategy{
-    uint256 rate_for_investor; 
+contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStrategy {
+    uint256 rate_for_investor;
     mapping(address=>uint) public registeredAmount;
 
     event RegistrationStatusChanged(address target, bool isRegistered);
 
-    function WhitelistedDistributionStrategy(uint256 _rate_for_investor){
+    function WhitelistedDistributionStrategy(ERC20 _token, uint256 _rate, uint256 _rate_for_investor)
+              VestedTokenDistributionStrategy(_token,_rate){
         rate_for_investor = _rate_for_investor;
     }
 
@@ -51,7 +52,7 @@ contract WhitelistedDistributionStrategy is Ownable, FixedPoolWithDiscountsToken
 
     /**
      * @dev overriding calculateTokenAmount for whilelist investors
-     * @return discounted rate if it applies for the investor, 
+     * @return discounted rate if it applies for the investor,
      * otherwise, return token amount according to super class
      */
 
@@ -59,7 +60,7 @@ contract WhitelistedDistributionStrategy is Ownable, FixedPoolWithDiscountsToken
         if (_weiAmount >= registeredAmount[msg.sender] && registeredAmount[msg.sender] > 0 ){
             tokens = _weiAmount.mul(rate);
             tokens = tokens.add(tokens.mul(rate_for_investor).div(100));
-        }else{
+        } else{
             tokens = super.calculateTokenAmount(_weiAmount);
         }
     }

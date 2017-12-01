@@ -1,13 +1,13 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import './crowdsale/CappedCompositeCrowdsale.sol';
 import './crowdsale/RefundableCompositeCrowdsale.sol';
 import './EthicHubTokenDistributionStrategy.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-
+import './EthixToken.sol';
 
 contract EthicHubPresale is RefundableCompositeCrowdsale, CappedCompositeCrowdsale {
-
+  //TODO hardcoding of parameters
   /**
    * @dev since our wei/token conversion rate is different, we implement it separatedly
    *      from Crowdsale
@@ -21,9 +21,9 @@ contract EthicHubPresale is RefundableCompositeCrowdsale, CappedCompositeCrowdsa
    */
   function EthicHubPresale(uint256 _startTime, uint256 _endTime, uint256 _goal, uint256 _cap, address _wallet, EthicHubTokenDistributionStrategy _tokenDistribution)
     Ownable()
-    RefundableCompositeCrowdsale(_goal)
-    CappedCompositeCrowdsale(_cap)
     CompositeCrowdsale(_startTime, _endTime, _wallet, _tokenDistribution)
+    CappedCompositeCrowdsale(_cap)
+    RefundableCompositeCrowdsale(_goal)
   {
 
     //As goal needs to be met for a successful crowdsale
@@ -31,24 +31,6 @@ contract EthicHubPresale is RefundableCompositeCrowdsale, CappedCompositeCrowdsa
     require(_goal <= _cap);
   }
 
-  //function configurePresale () {
-    //uint256 startTime = now;
-    //uint256 endTime = startTime + 40 days);
-    //uint256 rate = 4;
-    //uint256 cap = 30;
-    //uint256 goal = 8;
-    //SimpleToken fixedPoolToken = new SimpleToken();
-    //uint256 totalSupply = fixedPoolToken.totalSupply;
-    //EthicHubTokenDistributionStrategy tokenDistribution;
-
-    //tokenDistribution = new TokenDistribution(fixedPoolToken.address,rate);
-    //tokenDistribution = new TokenDistribution(fixedPoolToken.address,rate);
-
-    //EthicHubPresale = new EthicHubPresale(startTime, endTime, goal, cap, wallet, tokenDistribution.address);
-  //}
- //tokenDis = Ethi
- //ethic= EthicHubPresale(Ethi)
- //ethic.initIn
 
 
 
