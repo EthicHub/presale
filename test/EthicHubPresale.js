@@ -16,7 +16,7 @@ const should = require('chai')
 const EthicHubTokenDistribution = artifacts.require('EthicHubTokenDistributionStrategy');
 const Token = artifacts.require('ERC20')
 
-const SimpleToken = artifacts.require('SimpleToken')
+const EthixToken = artifacts.require('EthixToken')
 
 const EthicHubPresale = artifacts.require('EthicHubPresale');
 
@@ -27,6 +27,7 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
   const goal = ether(800)
   const numIntervals = 3;
   const percentageDiscount = 10;
+  const whitelistRate = new BigNumber(10000);
 
   before(async function() {
     //Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
@@ -38,16 +39,23 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
     this.startTime = latestTime() + duration.days(1);
     this.endTime = this.startTime + duration.days(40);
 
-    const fixedPoolToken = await SimpleToken.new();
-    const totalSupply = await fixedPoolToken.totalSupply();
-    this.tokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE);
-    //this.tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
+    const fixedPoolToken = await EthixToken.new();
 
+    const totalSupply = await fixedPoolToken.totalSupply();
+
+    //TODO set correct presale amount of tokens
+    const presaleSupply = totalSupply.mul(20).div(100);
+
+    this.tokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE,whitelistRate);
     this.crowdsale = await EthicHubPresale.new(this.startTime, this.endTime, goal, cap, wallet, this.tokenDistribution.address);
-    await fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
+    console.log(presaleSupply);
+    await fixedPoolToken.transfer(this.tokenDistribution.address, presaleSupply);
+
+    //TODO transfer rest of the tokens to team vestings and ethichub wallet
     this.token = Token.at(await this.tokenDistribution.getToken.call());
 
   })
+
 
   describe('Initialization', function() {
 
@@ -59,6 +67,8 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
       (await this.crowdsale.owner()).should.be.equal(owner);
     })
 
+
+
     it("should set a cap when created", async function() {
       (await this.crowdsale.cap()).should.be.bignumber.equal(cap);
     });
@@ -66,6 +76,7 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
     it("should set a goal when created", async function() {
       (await this.crowdsale.goal()).should.be.bignumber.equal(goal);
     });
+
   });
 
   describe('proving the intervals of the distribution', function () {

@@ -14,7 +14,8 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
 
     event RegistrationStatusChanged(address target, bool isRegistered);
 
-    function WhitelistedDistributionStrategy(uint256 _rate_for_investor){
+    function WhitelistedDistributionStrategy(ERC20 _token, uint256 _rate, uint256 _rate_for_investor)
+              VestedTokenDistributionStrategy(_token,_rate){
         rate_for_investor = _rate_for_investor;
     }
 

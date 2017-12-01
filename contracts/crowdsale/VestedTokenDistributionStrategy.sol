@@ -1,9 +1,9 @@
 pragma solidity ^0.4.18;
 
 import './FixedPoolWithDiscountsTokenDistributionStrategy.sol';
-import '../token/ERC20.sol';
-import '../math/SafeMath.sol';
-import '../ownership/Ownable.sol';
+import 'zeppelin-solidity/contracts/token/ERC20.sol';
+import 'zeppelin-solidity/contracts/math/SafeMath.sol';
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 /**
  * @title VestedTokenDistributionStrategy
@@ -33,7 +33,7 @@ contract VestedTokenDistributionStrategy is Ownable, FixedPoolWithDiscountsToken
   }
 
   function VestedTokenDistributionStrategy(ERC20 _token, uint256 _rate)
-            FixedPoolTokenDistributionStrategy(_token, _rate) {
+            FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) {
 
   }
 
