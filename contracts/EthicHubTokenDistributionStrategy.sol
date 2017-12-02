@@ -15,7 +15,6 @@ import './EthixToken.sol';
  */
 contract EthicHubTokenDistributionStrategy is WhitelistedDistributionStrategy {
   //TODO hardcoding of parameters
-  uint256 constant RATE_FOR_INVESTOR = 25;
 
   function EthicHubTokenDistributionStrategy(EthixToken _token, uint256 _rate, uint256 _rateForInvestor)
            WhitelistedDistributionStrategy(_token, _rate, _rateForInvestor)
