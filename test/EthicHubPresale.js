@@ -113,17 +113,22 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
 
   describe('Vesting periods', function () {
     it('should set correct vesting periods ', async function() {
-      const tx = await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
-      const expectedStart = new BigNumber(this.vestingStart);
+      var vestingStart = this.endTime + + duration.days(1);
+      var vestingDuration = 1;
+	
+      const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
+      const expectedStart = new BigNumber(vestingStart);
       const resultStart = await this.tokenDistribution.vestingStart();
       resultStart.should.be.bignumber.equal(expectedStart);
-      const expectedDuration = new BigNumber(this.vestingDuration);
+      const expectedDuration = new BigNumber(vestingDuration);
       const resultDuration = await this.tokenDistribution.vestingDuration();
 
       resultDuration.should.be.bignumber.equal(expectedDuration);
     });
 
   });
+
+
 
   describe('Crowdsale', function() {
     it('should refund investors if goal is not reached in time');
