@@ -12,9 +12,4 @@ contract FixedPoolWithDiscountsTokenDistributionMock is FixedPoolWithDiscountsTo
     discountIntervals.push(DiscountInterval(_end,_discount));
   }
 
-  //@dev this is made to fail the test because we didnt set a period
-  function initIntervals() {
-    require(discountIntervals.length == 0);
-  }
-
 }

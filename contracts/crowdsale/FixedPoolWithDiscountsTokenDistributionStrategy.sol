@@ -23,6 +23,7 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
     uint256 discount;
   }
   DiscountInterval[] discountIntervals;
+  bool intervalsConfigured = false;
 
   // The token being sold
   ERC20 token;
@@ -43,6 +44,8 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
   // All intervals must have a positive discount (penalizations are not contemplated)
   modifier validateIntervals {
     _;
+    require(intervalsConfigured == false);
+    intervalsConfigured = true;
     require(discountIntervals.length > 0);
     for(uint i = 0; i < discountIntervals.length; ++i) {
       require(discountIntervals[i].discount >= 0);
@@ -56,7 +59,6 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
 
   // Init intervals
   function initIntervals() validateIntervals {
-    require(discountIntervals.length == 0);
   }
 
   function calculateTokenAmount(uint256 _weiAmount) view returns (uint256 tokens) {
@@ -78,9 +80,9 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
     totalContributed = totalContributed.add(_tokenAmount);
   }
 
-  function compensate(address _beneficiary, uint256 _amount) {
+  function compensate(address _beneficiary) {
     require(crowdsale.hasEnded());
-    if (token.transfer(_beneficiary, _amount)) {
+    if (token.transfer(_beneficiary, contributions[_beneficiary])) {
       contributions[_beneficiary] = 0;
     }
   }

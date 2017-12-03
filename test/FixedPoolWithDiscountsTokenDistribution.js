@@ -32,12 +32,13 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
   beforeEach(async function () {
     this.startTime = latestTime() + duration.days(1);
     this.endTime = this.startTime + duration.days(8);
+    this.afterEndTime = this.endTime + duration.seconds(1);
 
     const fixedPoolToken = await SimpleToken.new();
     const totalSupply = await fixedPoolToken.totalSupply();
     this.tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
 
-    this.crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address)
+    this.crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address);
 
     await fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
     this.token = Token.at(await this.tokenDistribution.getToken.call());
@@ -49,32 +50,39 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
   describe('proving the intervals of the distribution', function () {
 
     beforeEach(async function () {
-      this.afterEndTime = this.endTime + duration.seconds(1);
 
       for (var i = 0; i <= numIntervals; i++) {
         this.tokenDistribution.addInterval(this.startTime + duration.days(2*i+1), (numIntervals-i)*percentageDiscount);
       }
       await this.tokenDistribution.initIntervals();
-      //console.log(await this.tokenDistribution.getIntervals());
 
     })
 
     it('should calculate tokens', async function () {
-      var tokens = 0
+      var tokens = new BigNumber(0);
       for (var i = 0; i <= numIntervals; i++) {
         await increaseTimeTo(this.startTime + duration.days(2*i))
         const investmentAmount = ether(0.000000000000000001);
         console.log("*** Amount: " + investmentAmount);
-        tokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
+        const newTokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
+        tokens = tokens.add(newTokens);
         console.log("*** COMPOSITION Tokens: " + tokens);
         let tx = await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
         console.log("*** COMPOSITION FIXED POOL: " + tx.receipt.gasUsed + " gas used.");
-
       }
       await increaseTimeTo(this.afterEndTime);
-      await this.tokenDistribution.compensate(investor, tokens).should.be.fulfilled;
+      await this.tokenDistribution.compensate(investor).should.be.fulfilled;
       (await this.token.balanceOf(investor)).should.be.bignumber.equal(tokens);
 
+    })
+
+    it('should fail to set intervals twice',async function () {
+      const fixedPoolToken = await SimpleToken.new();
+      const tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
+      const crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, tokenDistribution.address);
+      tokenDistribution.addInterval(this.startTime + duration.days(1), 1);
+      await tokenDistribution.initIntervals().should.be.fulfilled;
+      await tokenDistribution.initIntervals().should.be.rejectedWith(EVMRevert);
     })
 
   });

@@ -14,16 +14,14 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 contract VestedTokenDistributionStrategy is Ownable, FixedPoolWithDiscountsTokenDistributionStrategy {
 
 
-  event Released(address beneficiary, uint256 amount);
-  event Log(string message);
-  event Duration(string message, uint256 amount);
+  event Released(address indexed beneficiary, uint256 indexed amount);
+
   //Time after which is allowed to compensates
   uint256 public vestingStart;
   bool public vestingConfigured = false;
   uint256 public vestingDuration;
 
   mapping (address => uint256) public released;
-
 
   modifier vestingPeriodStarted {
     require(crowdsale.hasEnded());

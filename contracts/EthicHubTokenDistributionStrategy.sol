@@ -25,9 +25,7 @@ contract EthicHubTokenDistributionStrategy is WhitelistedDistributionStrategy {
 
 
   // Init intervals
-  function initIntervals() validateIntervals {
-    //super.initIntervals();
-    require(discountIntervals.length == 0);
+  function initIntervals() onlyOwner validateIntervals  {
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 1 days,10));
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 2 days,8));
     discountIntervals.push(DiscountInterval(crowdsale.startTime() + 3 days,6));

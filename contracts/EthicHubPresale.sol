@@ -20,7 +20,6 @@ contract EthicHubPresale is RefundableCompositeCrowdsale, CappedCompositeCrowdsa
    * @param       _tokenDistribution Strategy to distributed tokens.
    */
   function EthicHubPresale(uint256 _startTime, uint256 _endTime, uint256 _goal, uint256 _cap, address _wallet, EthicHubTokenDistributionStrategy _tokenDistribution)
-    Ownable()
     CompositeCrowdsale(_startTime, _endTime, _wallet, _tokenDistribution)
     CappedCompositeCrowdsale(_cap)
     RefundableCompositeCrowdsale(_goal)
@@ -31,7 +30,7 @@ contract EthicHubPresale is RefundableCompositeCrowdsale, CappedCompositeCrowdsa
     require(_goal <= _cap);
   }
 
-
+  
 
 
 }

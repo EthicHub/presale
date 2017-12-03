@@ -12,7 +12,7 @@ const should = require('chai')
   .should()
 
 const CompositeCrowdsale = artifacts.require('CompositeCrowdsale');
-const VestedTokenDistributionStrategy = artifacts.require('VestedTokenDistributionStrategy');
+const VestedTokenDistributionStrategy = artifacts.require('./helpers/VestedTokenDistributionStrategyMock.sol');
 const Token = artifacts.require('ERC20');
 
 const SimpleToken = artifacts.require('SimpleToken');
@@ -38,6 +38,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       this.fixedPoolToken = await SimpleToken.new();
       const totalSupply = await this.fixedPoolToken.totalSupply();
       this.tokenDistribution = await VestedTokenDistributionStrategy.new(this.fixedPoolToken.address, RATE);
+
       await this.fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
 
       this.crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address)
@@ -65,7 +66,11 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       resultDuration.should.be.bignumber.equal(expectedDuration);
     });
 
-    it('should set vesting periods only once');
+    it('should set vesting periods only once', async function() {
+      await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration).should.be.fulfilled;
+      await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration).should.be.rejectedWith(EVMRevert);
+
+    });
 
     it('should fail when setting date previous to end', async function() {
       const badTime = this.endTime - duration.seconds(1);
@@ -92,6 +97,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       const {receipt} = await this.tokenDistribution.compensate(investor);
       const releaseTime = web3.eth.getBlock(receipt.blockNumber).timestamp;
       const balance = await this.token.balanceOf(investor);
+
       balance.should.bignumber.equal(amount.mul(releaseTime - this.vestingStart).div(this.vestingDuration).floor());
     });
 
