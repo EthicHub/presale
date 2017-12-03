@@ -20,14 +20,14 @@ const EthixToken = artifacts.require('EthixToken')
 
 const EthicHubPresale = artifacts.require('EthicHubPresale');
 
-contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
+contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wallet]) {
 
   const RATE = new BigNumber(4000);
   const cap = ether(3000)
   const goal = ether(800)
   const numIntervals = 3;
   const percentageDiscount = 10;
-  const whitelistRate = new BigNumber(10000);
+  const whitelistRate = new BigNumber(5000);
 
   before(async function() {
     //Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
@@ -55,7 +55,6 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
     this.token = Token.at(await this.tokenDistribution.getToken.call());
 
   })
-
 
   describe('Initialization', function() {
 
@@ -113,17 +112,66 @@ contract('EthicHubPresale', function ([owner, _, investor, wallet]) {
 
   describe('Vesting periods', function () {
     it('should set correct vesting periods ', async function() {
-      const tx = await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
-      const expectedStart = new BigNumber(this.vestingStart);
+      var vestingStart = this.endTime + + duration.days(1);
+      var vestingDuration = 1;
+	
+      const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
+      const expectedStart = new BigNumber(vestingStart);
       const resultStart = await this.tokenDistribution.vestingStart();
       resultStart.should.be.bignumber.equal(expectedStart);
-      const expectedDuration = new BigNumber(this.vestingDuration);
+      const expectedDuration = new BigNumber(vestingDuration);
       const resultDuration = await this.tokenDistribution.vestingDuration();
 
       resultDuration.should.be.bignumber.equal(expectedDuration);
     });
 
   });
+
+  describe('whitelists', function() {
+    it('should calculate correct tokens for whitelists investor', async function(){
+      	var vestingStart = this.endTime + + duration.days(1);
+      	var vestingDuration = 1;
+      	await this.tokenDistribution.initIntervals();
+	await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
+        const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
+        await increaseTimeTo(this.startTime + duration.days(0.5))
+        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(5), {from: investor}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor, {value: ether(5), from: investor}).should.be.fulfilled;
+	whitelistRate.mul(ether(5)).should.be.bignumber.equal(tokens);
+
+        await this.crowdsale.buyTokens(investor2, {value: goal, from: investor2}).should.be.fulfilled;
+        await increaseTimeTo(this.endTime + duration.days(4))
+
+	await this.crowdsale.finalize().should.be.fulfilled;
+	await this.tokenDistribution.compensate(investor, tokens).should.be.fulfilled;
+	let newBalance = await this.token.balanceOf(investor);
+      	newBalance.should.be.bignumber.equal(tokens);
+    });
+
+    it('whitelists investor does not reach his compromised amount', async function(){
+      	var vestingStart = this.endTime + + duration.days(1);
+      	var vestingDuration = 1;
+      	await this.tokenDistribution.initIntervals();
+        const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
+	await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
+	await increaseTimeTo(this.startTime + duration.days(0.5))
+        await this.crowdsale.buyTokens(investor, {value: ether(4), from: investor}).should.be.fulfilled;
+        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(4), {from: investor}).should.be.fulfilled;
+	RATE.mul(ether(4).mul(1.1)).should.be.bignumber.equal(tokens);
+
+        await this.crowdsale.buyTokens(investor2, {value: goal, from: investor2}).should.be.fulfilled;
+        await increaseTimeTo(this.endTime + duration.days(4))
+
+	await this.crowdsale.finalize().should.be.fulfilled;
+
+	await this.tokenDistribution.compensate(investor, tokens).should.be.fulfilled;
+
+	let newBalance = await this.token.balanceOf(investor);
+      	newBalance.should.be.bignumber.equal(tokens);
+    });
+
+  });
+
 
   describe('Crowdsale', function() {
     it('should refund investors if goal is not reached in time');
