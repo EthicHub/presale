@@ -127,6 +127,10 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
           balance.should.bignumber.equal(expectedVesting);
         }
       }
+      //TODO after period should add 0
+      //await this.tokenDistribution.compensate(investor);
+      //        const balance = await this.token.balanceOf(investor);
+      //const balance = await this.token.balanceOf(investor);
 
     });
 

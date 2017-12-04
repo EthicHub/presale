@@ -19,7 +19,7 @@ const EthixToken = artifacts.require('EthixToken')
 
 const EthicHubPresale = artifacts.require('EthicHubPresale');
 
-contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wallet]) {
+contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, investor4, investor5, wallet]) {
 
   const RATE = new BigNumber(4000);
   const cap = ether(3000)
@@ -28,13 +28,10 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
   const percentageDiscount = 10;
   const whitelistRate = new BigNumber(5000);
 
-  before(async function() {
-    //Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
-    await advanceBlock();
-  })
-
 
   beforeEach(async function () {
+    await advanceBlock();
+
     this.startTime = latestTime() + duration.days(1);
     this.endTime = this.startTime + duration.days(40);
     this.afterEndTime = this.endTime + duration.seconds(1);
@@ -42,7 +39,6 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
     this.vestingDuration = duration.days(100);
 
     const fixedPoolToken = await EthixToken.new();
-
     const totalSupply = await fixedPoolToken.totalSupply();
 
     //TODO set correct presale amount of tokens
@@ -50,6 +46,7 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
 
     this.tokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE,whitelistRate);
     this.crowdsale = await EthicHubPresale.new(this.startTime, this.endTime, goal, cap, wallet, this.tokenDistribution.address);
+
     await fixedPoolToken.transfer(this.tokenDistribution.address, presaleSupply);
 
     //TODO transfer rest of the tokens to team vestings and ethichub wallet
@@ -81,9 +78,9 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
       this.tokenDistribution.transferOwnership(investor2);
       (await this.tokenDistribution.owner()).should.be.equal(investor2);
       console.log("crowdsale");
-      console.log(investor2);
-      this.crowdsale.transferOwnership(investor2);
-      (await this.crowdsale.owner()).should.be.equal(investor2);
+      console.log(investor);
+      this.crowdsale.transferOwnership(investor,{from:owner});
+      (await this.crowdsale.owner()).should.be.equal(investor);
 
     })
 
@@ -101,6 +98,7 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
   describe('proving the intervals of the distribution', function () {
 
     beforeEach(async function () {
+      console.log("y");
       await this.tokenDistribution.initIntervals();
     })
 
@@ -203,10 +201,59 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
       console.log("LOL");
       await this.tokenDistribution.initIntervals();
       console.log("What");
+      console.log(this.vestingTime);
+      console.log(this.vestingDuration);
 
-      await this.tokenDistribution.configureVesting(this.vestingStart, this.vestingDuration);
+      await this.tokenDistribution.configureVesting(this.vestingTime, this.vestingDuration);
+      console.log("What2");
+
+      await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
+
     });
-    it('should refund investors if goal is not reached in time');
+    it.only('should refund investors if goal is not reached in time', async function () {
+      await increaseTimeTo(this.startTime + duration.days(0.5))
+      //Buy period
+      console.log("o");
+      await this.crowdsale.buyTokens(investor, {value: ether(1)});
+      const balance1 = web3.eth.getBalance(investor);
+
+      await this.crowdsale.buyTokens(investor2, {value: ether(1.999)});
+      const balance2 = web3.eth.getBalance(investor2);
+
+      await increaseTimeTo(this.startTime + duration.days(1.5))
+      await this.crowdsale.buyTokens(investor3, {value: ether(1)});
+      await increaseTimeTo(this.startTime + duration.days(5))
+      await this.crowdsale.buyTokens(investor3, {value: ether(1)});
+      const balance3 = web3.eth.getBalance(investor3);
+
+      //Crowdsale end
+      await increaseTimeTo(this.afterEndTime);
+      console.log("finalize");
+      await this.crowdsale.finalize();
+
+      //Return funds shouls be successes
+      console.log("Refunds");
+      console.dir(this.crowdsale.claimRefund);
+      console.dir(EthicHubPresale._json.abi);
+      await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
+      console.log("getBalance");
+
+      web3.eth.getBalance(investor).should.be.equal(balance1.add(ether(1)));
+      console.log("crowdsale");
+
+      await this.crowdsale.claimRefund({from:investor2}).should.be.fulfilled;
+      web3.eth.getBalance(investor2).should.be.equal(balance2.add(ether(1.999)));
+      await this.crowdsale.claimRefund({from:investor3}).should.be.fulfilled;
+      web3.eth.getBalance(investor3).should.be.equal(balance1.add(ether(2)));
+
+
+
+      //Compensation fail
+      // const afterVesting = this.vestingTime + this.vestingDuration + duration.days(1);
+      // await increaseTimeTo(afterVesting);
+      //
+      // await this.tokenDistribution.compensate(investor).should.be.rejectedWith(EVMRevert);
+    });
     it('should have a succesfull crowdsale not reaching cap and compensating vested tokens');
     it('should have a succesfull crowdsale reaching cap, rejecting further buys and compensating vested tokens');
 

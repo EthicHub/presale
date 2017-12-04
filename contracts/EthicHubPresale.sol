@@ -6,7 +6,7 @@ import './EthicHubTokenDistributionStrategy.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './EthixToken.sol';
 
-contract EthicHubPresale is RefundableCompositeCrowdsale, CappedCompositeCrowdsale {
+contract EthicHubPresale is CappedCompositeCrowdsale,RefundableCompositeCrowdsale {
   //TODO hardcoding of parameters
   /**
    * @dev since our wei/token conversion rate is different, we implement it separatedly
@@ -30,7 +30,10 @@ contract EthicHubPresale is RefundableCompositeCrowdsale, CappedCompositeCrowdsa
     require(_goal <= _cap);
   }
 
-  
+  function claimRefund() public {
+    super.claimRefund();
+  }
+
 
 
 }
