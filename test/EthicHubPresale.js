@@ -22,11 +22,10 @@ const EthicHubPresale = artifacts.require('EthicHubPresale');
 contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, investor4, investor5, wallet]) {
 
   const RATE = new BigNumber(4000);
-  const cap = ether(3000)
-  const goal = ether(800)
-  const numIntervals = 3;
-  const percentageDiscount = 10;
+  const cap = ether(3000);
+  const goal = ether(800);
   const whitelistRate = new BigNumber(5000);
+  const moreThanGoal = ether(1000);
 
 
   beforeEach(async function () {
@@ -145,14 +144,14 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
   });
 
-  describe('whitelists', function() {
+  describe('Whitelists', function() {
     it('should calculate correct tokens for whitelists investor', async function(){
 
-      	await this.tokenDistribution.initIntervals();
+        await this.tokenDistribution.initIntervals();
         await this.tokenDistribution.changeRegistrationStatus(investor, ether(5));
 
         var vestingStart = this.endTime + duration.days(1);
-      	var vestingDuration = 1;
+        var vestingDuration = 1;
         const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
         await increaseTimeTo(this.startTime + duration.days(0.5))
 
@@ -167,14 +166,14 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
         await this.tokenDistribution.compensate(investor).should.be.fulfilled;
         let newBalance = await this.token.balanceOf(investor);
-      	newBalance.should.be.bignumber.equal(tokens);
+        newBalance.should.be.bignumber.equal(tokens);
     });
 
     it('whitelists investor does not reach his compromised amount', async function(){
 
-      	var vestingStart = this.endTime + duration.days(1);
-      	var vestingDuration = 1;
-      	await this.tokenDistribution.initIntervals();
+        var vestingStart = this.endTime + duration.days(1);
+        var vestingDuration = 1;
+        await this.tokenDistribution.initIntervals();
         const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
         await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
         await increaseTimeTo(this.startTime + duration.days(0.5))
@@ -190,7 +189,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
         await this.tokenDistribution.compensate(investor).should.be.fulfilled;
 
         let newBalance = await this.token.balanceOf(investor);
-      	newBalance.should.be.bignumber.equal(tokens);
+        newBalance.should.be.bignumber.equal(tokens);
     });
 
   });
@@ -198,7 +197,6 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
   describe('Crowdsale', function() {
     beforeEach(async function () {
-      console.log("LOL");
       await this.tokenDistribution.initIntervals();
       console.log("What");
       console.log(this.vestingTime);
@@ -210,7 +208,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
 
     });
-    it.only('should refund investors if goal is not reached in time', async function () {
+    it('should refund investors if goal is not reached in time', async function () {
       await increaseTimeTo(this.startTime + duration.days(0.5))
       //Buy period
       console.log("o");
@@ -254,7 +252,58 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       //
       // await this.tokenDistribution.compensate(investor).should.be.rejectedWith(EVMRevert);
     });
-    it('should have a succesfull crowdsale not reaching cap and compensating vested tokens');
+
+
+    it('should have a succesfull crowdsale not reaching cap and compensating vested tokens', async function(){
+
+      await increaseTimeTo(this.startTime + duration.days(1));
+      let amount = await this.tokenDistribution.calculateTokenAmount(moreThanGoal, {from: investor}).should.be.fulfilled;
+      console.log("Amount:" + amount);
+      await this.crowdsale.buyTokens(investor, {value: moreThanGoal, from: investor}).should.be.fulfilled;
+      //await this.crowdsale.send(moreThanGoal);
+      await increaseTimeTo(this.endTime + duration.days(1));
+      await this.crowdsale.finalize().should.be.fulfilled;
+
+      // Vested 1 day
+      await increaseTimeTo(this.vestingTime + duration.days(1));
+      console.log("Amount/100:" + amount.div(100));
+      console.log("Vested Amount day 1:" + await this.tokenDistribution.vestedAmount(investor));
+      var tx = await this.tokenDistribution.compensate(investor).should.be.fulfilled;
+      var releaseTime = web3.eth.getBlock(tx.receipt.blockNumber).timestamp;
+      var balance = await this.token.balanceOf(investor);
+      console.log("Balance:" + balance);
+      var expectedVesting = amount.mul(releaseTime - this.vestingTime).div(this.vestingDuration).floor();
+      console.log("Expected Vesting:" + expectedVesting);
+      balance.should.bignumber.equal(expectedVesting);
+
+      // Vested middle duration
+      await increaseTimeTo(this.vestingTime + duration.days(50));
+      console.log("Amount/2:" + amount.div(2));
+      console.log("Vested Amount middle:" + await this.tokenDistribution.vestedAmount(investor));
+      tx = await this.tokenDistribution.compensate(investor).should.be.fulfilled;
+      releaseTime = web3.eth.getBlock(tx.receipt.blockNumber).timestamp;
+      balance = await this.token.balanceOf(investor);
+      console.log("Balance:" + balance);
+      expectedVesting = amount.mul(releaseTime - this.vestingTime).div(this.vestingDuration).floor();
+      console.log("Expected Vesting:" + expectedVesting);
+      balance.should.bignumber.equal(expectedVesting);
+
+      // Vested end duration
+      await increaseTimeTo(this.vestingTime + duration.days(100));
+      console.log("Amount:" + amount);
+      console.log("Vested Amount end:" + await this.tokenDistribution.vestedAmount(investor));
+      tx = await this.tokenDistribution.compensate(investor).should.be.fulfilled;
+      releaseTime = web3.eth.getBlock(tx.receipt.blockNumber).timestamp;
+      balance = await this.token.balanceOf(investor);
+      console.log("Balance:" + balance);
+      expectedVesting = amount.mul(releaseTime - this.vestingTime).div(this.vestingDuration).floor();
+      console.log("Expected Vesting:" + expectedVesting);
+      balance.should.bignumber.equal(expectedVesting);
+
+    });
+
+
+
     it('should have a succesfull crowdsale reaching cap, rejecting further buys and compensating vested tokens');
 
     it('should pause?');
