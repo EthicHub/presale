@@ -94,17 +94,35 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
   });
 
+  describe('when buying tokens', function() {
+    beforeEach(async function () {
+      await increaseTimeTo(this.startTime + duration.seconds(2));
+    });
+
+    it('should reject buying over limit', async function () {
+      var amount = await this.crowdsale.minimumBidAllowed();
+      amount = amount.sub(new BigNumber(1));
+      await this.crowdsale.buyTokens(investor, {value: amount, from: investor}).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('should reject buying under minimun contribution', async function() {
+      var amount = await this.crowdsale.maximumBidAllowed();
+      amount = amount.add(new BigNumber(1));
+      await this.crowdsale.buyTokens(investor, {value: amount, from: investor}).should.be.rejectedWith(EVMRevert);
+    });
+
+  });
+
   describe('proving the intervals of the distribution', function () {
 
     beforeEach(async function () {
-      console.log("y");
       await this.tokenDistribution.initIntervals();
     })
 
     it('should calculate tokens', async function () {
       var [endPeriods, discounts] = await this.tokenDistribution.getIntervals();
       var tokens = new BigNumber(0);
-      const investmentAmount = ether(0.000000000000000001);
+      const investmentAmount = ether(1);
       console.log(`*** Amount:  ${investmentAmount}`);
       for (var i = 0; i <= endPeriods.length; i++) {
 
@@ -198,20 +216,13 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
   describe('Crowdsale', function() {
     beforeEach(async function () {
       await this.tokenDistribution.initIntervals();
-      console.log("What");
-      console.log(this.vestingTime);
-      console.log(this.vestingDuration);
-
       await this.tokenDistribution.configureVesting(this.vestingTime, this.vestingDuration);
-      console.log("What2");
-
       await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
 
     });
     it('should refund investors if goal is not reached in time', async function () {
       await increaseTimeTo(this.startTime + duration.days(0.5))
       //Buy period
-      console.log("o");
       await this.crowdsale.buyTokens(investor, {value: ether(1)});
       const balance1 = web3.eth.getBalance(investor);
 
@@ -231,8 +242,8 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
       //Return funds shouls be successes
       console.log("Refunds");
-      console.dir(this.crowdsale.claimRefund);
-      console.dir(EthicHubPresale._json.abi);
+      // console.dir(this.crowdsale.claimRefund);
+      // console.dir(EthicHubPresale._json.abi);
       await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
       console.log("getBalance");
 

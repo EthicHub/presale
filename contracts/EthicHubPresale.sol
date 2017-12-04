@@ -8,6 +8,9 @@ import './EthixToken.sol';
 
 contract EthicHubPresale is CappedCompositeCrowdsale,RefundableCompositeCrowdsale {
   //TODO hardcoding of parameters
+  uint256 public constant minimumBidAllowed = 0.25 ether;
+  uint256 public constant maximumBidAllowed = 500 ether;
+
   /**
    * @dev since our wei/token conversion rate is different, we implement it separatedly
    *      from Crowdsale
@@ -35,5 +38,10 @@ contract EthicHubPresale is CappedCompositeCrowdsale,RefundableCompositeCrowdsal
   }
 
 
+  function validPurchase() internal view returns (bool) {
+
+    bool underLimits = msg.value >= minimumBidAllowed && msg.value <= maximumBidAllowed;
+    return super.validPurchase() && underLimits;
+  }
 
 }
