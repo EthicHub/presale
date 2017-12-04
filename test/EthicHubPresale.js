@@ -77,8 +77,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       (await this.tokenDistribution.owner()).should.be.equal(investor2);
       this.crowdsale.transferOwnership(investor,{from:owner});
       (await this.crowdsale.owner()).should.be.equal(investor);
-    })
-
+    });
 
     it("should set a cap when created", async function() {
       (await this.crowdsale.cap()).should.be.bignumber.equal(cap);
@@ -100,7 +99,6 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       amount = amount.sub(new BigNumber(1));
       await this.crowdsale.buyTokens(investor, {value: amount, from: investor}).should.be.rejectedWith(EVMRevert);
     });
-+
 
     it('should reject buying over max limit', async function() {
       var amount = await this.crowdsale.maximumBidAllowed();
@@ -169,7 +167,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
   describe('Whitelists', function() {
 
-    it('should calculate correct tokens for whitelists investor', async function(){
+    it.only('should calculate correct tokens for whitelists investor', async function(){
 
         await this.tokenDistribution.initIntervals();
         await this.tokenDistribution.changeRegistrationStatus(investor, ether(5));
@@ -184,8 +182,10 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
         await this.crowdsale.buyTokens(investor, {value: ether(5), from: investor}).should.be.fulfilled;
         whitelistRate.mul(ether(5)).should.be.bignumber.equal(tokens);
 
-        await this.crowdsale.buyTokens(investor2, {value: goal.div(2), from: investor2}).should.be.fulfilled;
-        await this.crowdsale.buyTokens(investor3, {value: goal.div(2), from: investor2}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor2, {value: goal.div(3), from: investor2}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor3, {value: goal.div(3), from: investor2}).should.be.fulfilled;
+        await increaseTimeTo(this.startTime + duration.days(0.5))
+        await this.crowdsale.buyTokens(investor4, {value: goal.div(3), from: investor4}).should.be.fulfilled;
 
         await increaseTimeTo(this.endTime + duration.days(4))
         await this.crowdsale.finalize().should.be.fulfilled;
