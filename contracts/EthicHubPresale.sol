@@ -11,6 +11,10 @@ contract EthicHubPresale is CappedCompositeCrowdsale,RefundableCompositeCrowdsal
   uint256 public constant minimumBidAllowed = 0.25 ether;
   uint256 public constant maximumBidAllowed = 500 ether;
 
+  uint public constant GAS_LIMIT_IN_WEI = 50000000000 wei; // limit gas price -50 Gwei wales stopper
+
+  mapping(address=>uint) public participated;
+
   /**
    * @dev since our wei/token conversion rate is different, we implement it separatedly
    *      from Crowdsale
@@ -37,11 +41,18 @@ contract EthicHubPresale is CappedCompositeCrowdsale,RefundableCompositeCrowdsal
     super.claimRefund();
   }
 
+  /**
+   * We enforce a minimum purchase price and a maximum investemnt per wallet
+   * @return valid
+   */
+  function buyTokens(address beneficiary) payable {
+    //require(tx.gasprice <= GAS_LIMIT_IN_WEI);
+    require(msg.value >= minimumBidAllowed);
+    require(msg.value + participated[msg.sender] <= maximumBidAllowed);
+    participated[msg.sender] = participated[msg.sender].add(msg.value);
 
-  function validPurchase() internal view returns (bool) {
-
-    bool underLimits = msg.value >= minimumBidAllowed && msg.value <= maximumBidAllowed;
-    return super.validPurchase() && underLimits;
+    super.buyTokens(beneficiary);
   }
+
 
 }
