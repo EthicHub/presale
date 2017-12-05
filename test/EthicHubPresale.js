@@ -56,145 +56,145 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
 
   })
 
-//  describe('Initialization', function() {
-//
-//    it('should fulfilled initiate with intervals token distribution', async function () {
-//      await this.tokenDistribution.initIntervals().should.be.fulfilled;
-//    })
-//    it('should fulfilled initiate with intervals token distribution', async function () {
-//      await this.tokenDistribution.initIntervals().should.be.fulfilled;
-//      await this.tokenDistribution.initIntervals().should.be.rejectedWith(EVMRevert);
-//    })
-//
-//    it('should fail to set intervals if not owner', async function () {
-//      await this.tokenDistribution.initIntervals({from:investor3}).should.be.rejectedWith(EVMRevert);
-//
-//    })
-//
-//    it("should create the owner", async function() {
-//      (await this.tokenDistribution.owner()).should.be.equal(owner);
-//    })
-//
-//    it("should transfer ownership", async function() {
-//      console.log("tokenDistribution");
-//      this.tokenDistribution.transferOwnership(investor2);
-//      (await this.tokenDistribution.owner()).should.be.equal(investor2);
-//      console.log("crowdsale");
-//      console.log(investor2);
-//      this.crowdsale.transferOwnership(investor2);
-//      (await this.crowdsale.owner()).should.be.equal(investor2);
-//
-//    })
-//
-//
-//    it("should set a cap when created", async function() {
-//      (await this.crowdsale.cap()).should.be.bignumber.equal(cap);
-//    });
-//
-//    it("should set a goal when created", async function() {
-//      (await this.crowdsale.goal()).should.be.bignumber.equal(goal);
-//    });
-//
-//  });
-//
-//  describe('proving the intervals of the distribution', function () {
-//
-//    beforeEach(async function () {
-//      await this.tokenDistribution.initIntervals();
-//    })
-//
-//    it('should calculate tokens', async function () {
-//      var [endPeriods, discounts] = await this.tokenDistribution.getIntervals();
-//      var tokens = new BigNumber(0);
-//      const investmentAmount = ether(0.000000000000000001);
-//      console.log(`*** Amount:  ${investmentAmount}`);
-//      for (var i = 0; i <= endPeriods.length; i++) {
-//
-//        await increaseTimeTo(this.startTime + duration.days(i + 0.5))
-//        const newTokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount);
-//        console.log(`*** Tokens bought:  ${newTokens}`);
-//        tokens = tokens.add(newTokens);
-//        let tx = await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
-//        console.log(`*** Gas used: ${tx.receipt.gasUsed}`);
-//      }
-//
-//      await this.tokenDistribution.configureVesting(this.vestingTime,duration.seconds(1));
-//      await increaseTimeTo(this.vestingTime + duration.days(30));
-//      console.log(await this.tokenDistribution.vestedAmount(investor));
-//      await this.tokenDistribution.compensate(investor).should.be.fulfilled;
-//
-//      (await this.token.balanceOf(investor)).should.be.bignumber.equal(tokens);
-//
-//    })
-//
-//  });
-//
-//  describe('Vesting periods', function () {
-//    it('should set correct vesting periods ', async function() {
-//      var vestingStart = this.endTime + + duration.days(1);
-//      var vestingDuration = 1;
-//
-//      const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
-//      const expectedStart = new BigNumber(vestingStart);
-//      const resultStart = await this.tokenDistribution.vestingStart();
-//      resultStart.should.be.bignumber.equal(expectedStart);
-//      const expectedDuration = new BigNumber(vestingDuration);
-//      const resultDuration = await this.tokenDistribution.vestingDuration();
-//
-//      resultDuration.should.be.bignumber.equal(expectedDuration);
-//    });
-//
-//  });
-//
-//  describe('Whitelists', function() {
-//    it('should calculate correct tokens for whitelists investor', async function(){
-//
-//        await this.tokenDistribution.initIntervals();
-//        await this.tokenDistribution.changeRegistrationStatus(investor, ether(5));
-//
-//        var vestingStart = this.endTime + duration.days(1);
-//        var vestingDuration = 1;
-//        const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
-//        await increaseTimeTo(this.startTime + duration.days(0.5))
-//
-//        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(5), {from: investor}).should.be.fulfilled;
-//        await this.crowdsale.buyTokens(investor, {value: ether(5), from: investor}).should.be.fulfilled;
-//        whitelistRate.mul(ether(5)).should.be.bignumber.equal(tokens);
-//
-//        await this.crowdsale.buyTokens(investor2, {value: goal, from: investor2}).should.be.fulfilled;
-//
-//        await increaseTimeTo(this.endTime + duration.days(4))
-//        await this.crowdsale.finalize().should.be.fulfilled;
-//
-//        await this.tokenDistribution.compensate(investor).should.be.fulfilled;
-//        let newBalance = await this.token.balanceOf(investor);
-//        newBalance.should.be.bignumber.equal(tokens);
-//    });
-//
-//    it('whitelists investor does not reach his compromised amount', async function(){
-//
-//        var vestingStart = this.endTime + duration.days(1);
-//        var vestingDuration = 1;
-//        await this.tokenDistribution.initIntervals();
-//        const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
-//        await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
-//        await increaseTimeTo(this.startTime + duration.days(0.5))
-//        await this.crowdsale.buyTokens(investor, {value: ether(4), from: investor}).should.be.fulfilled;
-//        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(4), {from: investor}).should.be.fulfilled;
-//        RATE.mul(ether(4).mul(1.1)).should.be.bignumber.equal(tokens);
-//
-//        await this.crowdsale.buyTokens(investor2, {value: goal, from: investor2}).should.be.fulfilled;
-//        await increaseTimeTo(this.endTime + duration.days(4))
-//
-//        await this.crowdsale.finalize().should.be.fulfilled;
-//
-//        await this.tokenDistribution.compensate(investor).should.be.fulfilled;
-//
-//        let newBalance = await this.token.balanceOf(investor);
-//        newBalance.should.be.bignumber.equal(tokens);
-//    });
-//
-//  });
+  describe('Initialization', function() {
+
+    it('should fulfilled initiate with intervals token distribution', async function () {
+      await this.tokenDistribution.initIntervals().should.be.fulfilled;
+    })
+    it('should fulfilled initiate with intervals token distribution', async function () {
+      await this.tokenDistribution.initIntervals().should.be.fulfilled;
+      await this.tokenDistribution.initIntervals().should.be.rejectedWith(EVMRevert);
+    })
+
+    it('should fail to set intervals if not owner', async function () {
+      await this.tokenDistribution.initIntervals({from:investor3}).should.be.rejectedWith(EVMRevert);
+
+    })
+
+    it("should create the owner", async function() {
+      (await this.tokenDistribution.owner()).should.be.equal(owner);
+    })
+
+    it("should transfer ownership", async function() {
+      console.log("tokenDistribution");
+      this.tokenDistribution.transferOwnership(investor2);
+      (await this.tokenDistribution.owner()).should.be.equal(investor2);
+      console.log("crowdsale");
+      console.log(investor2);
+      this.crowdsale.transferOwnership(investor2);
+      (await this.crowdsale.owner()).should.be.equal(investor2);
+
+    })
+
+
+    it("should set a cap when created", async function() {
+      (await this.crowdsale.cap()).should.be.bignumber.equal(cap);
+    });
+
+    it("should set a goal when created", async function() {
+      (await this.crowdsale.goal()).should.be.bignumber.equal(goal);
+    });
+
+  });
+
+  describe('proving the intervals of the distribution', function () {
+
+    beforeEach(async function () {
+      await this.tokenDistribution.initIntervals();
+    })
+
+    it('should calculate tokens', async function () {
+      var [endPeriods, discounts] = await this.tokenDistribution.getIntervals();
+      var tokens = new BigNumber(0);
+      const investmentAmount = ether(0.000000000000000001);
+      console.log(`*** Amount:  ${investmentAmount}`);
+      for (var i = 0; i <= endPeriods.length; i++) {
+
+        await increaseTimeTo(this.startTime + duration.days(i + 0.5))
+        const newTokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount);
+        console.log(`*** Tokens bought:  ${newTokens}`);
+        tokens = tokens.add(newTokens);
+        let tx = await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
+        console.log(`*** Gas used: ${tx.receipt.gasUsed}`);
+      }
+
+      await this.tokenDistribution.configureVesting(this.vestingTime,duration.seconds(1));
+      await increaseTimeTo(this.vestingTime + duration.days(30));
+      console.log(await this.tokenDistribution.vestedAmount(investor));
+      await this.tokenDistribution.compensate(investor).should.be.fulfilled;
+
+      (await this.token.balanceOf(investor)).should.be.bignumber.equal(tokens);
+
+    })
+
+  });
+
+  describe('Vesting periods', function () {
+    it('should set correct vesting periods ', async function() {
+      var vestingStart = this.endTime + + duration.days(1);
+      var vestingDuration = 1;
+
+      const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
+      const expectedStart = new BigNumber(vestingStart);
+      const resultStart = await this.tokenDistribution.vestingStart();
+      resultStart.should.be.bignumber.equal(expectedStart);
+      const expectedDuration = new BigNumber(vestingDuration);
+      const resultDuration = await this.tokenDistribution.vestingDuration();
+
+      resultDuration.should.be.bignumber.equal(expectedDuration);
+    });
+
+  });
+
+  describe('Whitelists', function() {
+    it('should calculate correct tokens for whitelists investor', async function(){
+
+        await this.tokenDistribution.initIntervals();
+        await this.tokenDistribution.changeRegistrationStatus(investor, ether(5));
+
+        var vestingStart = this.endTime + duration.days(1);
+        var vestingDuration = 1;
+        const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
+        await increaseTimeTo(this.startTime + duration.days(0.5))
+
+        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(5), {from: investor}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor, {value: ether(5), from: investor}).should.be.fulfilled;
+        whitelistRate.mul(ether(5)).should.be.bignumber.equal(tokens);
+
+        await this.crowdsale.buyTokens(investor2, {value: goal, from: investor2}).should.be.fulfilled;
+
+        await increaseTimeTo(this.endTime + duration.days(4))
+        await this.crowdsale.finalize().should.be.fulfilled;
+
+        await this.tokenDistribution.compensate(investor).should.be.fulfilled;
+        let newBalance = await this.token.balanceOf(investor);
+        newBalance.should.be.bignumber.equal(tokens);
+    });
+
+    it('whitelists investor does not reach his compromised amount', async function(){
+
+        var vestingStart = this.endTime + duration.days(1);
+        var vestingDuration = 1;
+        await this.tokenDistribution.initIntervals();
+        const tx = await this.tokenDistribution.configureVesting(vestingStart, vestingDuration);
+        await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
+        await increaseTimeTo(this.startTime + duration.days(0.5))
+        await this.crowdsale.buyTokens(investor, {value: ether(4), from: investor}).should.be.fulfilled;
+        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(4), {from: investor}).should.be.fulfilled;
+        RATE.mul(ether(4).mul(1.1)).should.be.bignumber.equal(tokens);
+
+        await this.crowdsale.buyTokens(investor2, {value: goal, from: investor2}).should.be.fulfilled;
+        await increaseTimeTo(this.endTime + duration.days(4))
+
+        await this.crowdsale.finalize().should.be.fulfilled;
+
+        await this.tokenDistribution.compensate(investor).should.be.fulfilled;
+
+        let newBalance = await this.token.balanceOf(investor);
+        newBalance.should.be.bignumber.equal(tokens);
+    });
+
+  });
 
 
   describe('Crowdsale', function() {
