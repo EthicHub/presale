@@ -71,7 +71,7 @@ contract CompositeCrowdsale {
     uint256 weiAmount = msg.value;
 
     // calculate token amount to be created
-    uint256 tokens = tokenDistribution.calculateTokenAmount(weiAmount);
+    uint256 tokens = tokenDistribution.calculateTokenAmount(weiAmount, beneficiary);
     // update state
     weiRaised = weiRaised.add(weiAmount);
 

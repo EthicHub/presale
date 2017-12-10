@@ -56,11 +56,11 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
      * otherwise, return token amount according to super class
      */
 
-    function calculateTokenAmount(uint256 _weiAmount) view returns (uint256 tokens) {
-        if (_weiAmount >= registeredAmount[msg.sender] && registeredAmount[msg.sender] > 0 ){
+    function calculateTokenAmount(uint256 _weiAmount, address beneficiary) view returns (uint256 tokens) {
+        if (_weiAmount >= registeredAmount[beneficiary] && registeredAmount[beneficiary] > 0 ){
             tokens = _weiAmount.mul(rate_for_investor);
         } else{
-            tokens = super.calculateTokenAmount(_weiAmount);
+            tokens = super.calculateTokenAmount(_weiAmount, beneficiary);
         }
     }
 }

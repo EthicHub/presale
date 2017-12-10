@@ -32,7 +32,7 @@ contract TokenDistributionStrategy {
 
   function distributeTokens(address beneficiary, uint amount);
 
-  function calculateTokenAmount(uint256 weiAmount) view returns (uint256 amount);
+  function calculateTokenAmount(uint256 _weiAmount, address beneficiary) view returns (uint256 amount);
 
   function getToken() view returns(ERC20);
 

@@ -6,7 +6,7 @@ import './EthicHubTokenDistributionStrategy.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './EthixToken.sol';
 
-contract EthicHubPresale is CappedCompositeCrowdsale,RefundableCompositeCrowdsale {
+contract EthicHubPresale is CappedCompositeCrowdsale, RefundableCompositeCrowdsale {
   //TODO hardcoding of parameters
   uint256 public constant minimumBidAllowed = 0.25 ether;
   uint256 public constant maximumBidAllowed = 500 ether;
@@ -48,7 +48,7 @@ contract EthicHubPresale is CappedCompositeCrowdsale,RefundableCompositeCrowdsal
   function buyTokens(address beneficiary) payable {
     //require(tx.gasprice <= GAS_LIMIT_IN_WEI);
     require(msg.value >= minimumBidAllowed);
-    require(msg.value + participated[msg.sender] <= maximumBidAllowed);
+    require(participated[msg.sender].add(msg.value) <= maximumBidAllowed);
     participated[msg.sender] = participated[msg.sender].add(msg.value);
 
     super.buyTokens(beneficiary);

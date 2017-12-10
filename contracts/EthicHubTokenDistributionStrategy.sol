@@ -1,5 +1,6 @@
 pragma solidity ^0.4.18;
 
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './crowdsale/FixedPoolWithDiscountsTokenDistributionStrategy.sol';
 import './crowdsale/WhitelistedDistributionStrategy.sol';
 import './EthixToken.sol';
@@ -13,7 +14,7 @@ import './EthixToken.sol';
  * This class is abstract, the intervals have to be defined by subclassing
  * Several whitelists are enabled
  */
-contract EthicHubTokenDistributionStrategy is WhitelistedDistributionStrategy {
+contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionStrategy {
   //TODO hardcoding of parameters
 
   function EthicHubTokenDistributionStrategy(EthixToken _token, uint256 _rate, uint256 _rateForInvestor)
