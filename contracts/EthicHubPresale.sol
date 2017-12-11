@@ -1,12 +1,14 @@
 pragma solidity ^0.4.18;
 
+import './crowdsale/CompositeCrowdsale.sol';
 import './crowdsale/CappedCompositeCrowdsale.sol';
 import './crowdsale/RefundableCompositeCrowdsale.sol';
 import './EthicHubTokenDistributionStrategy.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+import 'zeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import './EthixToken.sol';
 
-contract EthicHubPresale is CappedCompositeCrowdsale, RefundableCompositeCrowdsale {
+contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, RefundableCompositeCrowdsale {
   //TODO hardcoding of parameters
   uint256 public constant minimumBidAllowed = 0.25 ether;
   uint256 public constant maximumBidAllowed = 500 ether;
@@ -45,7 +47,7 @@ contract EthicHubPresale is CappedCompositeCrowdsale, RefundableCompositeCrowdsa
    * We enforce a minimum purchase price and a maximum investemnt per wallet
    * @return valid
    */
-  function buyTokens(address beneficiary) payable {
+  function buyTokens(address beneficiary) whenNotPaused payable {
     //require(tx.gasprice <= GAS_LIMIT_IN_WEI);
     require(msg.value >= minimumBidAllowed);
     require(participated[msg.sender].add(msg.value) <= maximumBidAllowed);
@@ -54,5 +56,11 @@ contract EthicHubPresale is CappedCompositeCrowdsale, RefundableCompositeCrowdsa
     super.buyTokens(beneficiary);
   }
 
-
+  /**
+  * Get user invested amount by his address, used to calculate user referral contribution
+  * @return total invested amount
+  */
+  function getInvestedAmount(address investor) view public returns(uint investedAmount){
+    investedAmount = participated[investor];
+  }
 }

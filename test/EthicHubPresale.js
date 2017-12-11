@@ -19,7 +19,7 @@ const EthixToken = artifacts.require('EthixToken')
 
 const EthicHubPresale = artifacts.require('EthicHubPresale');
 
-contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, investor4, investor5, wallet]) {
+contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, investor4, investor5, investor6, investor7, investor8, wallet]) {
 
   const RATE = new BigNumber(4000);
   const cap = ether(3000);
@@ -231,7 +231,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
 
     });
-    it.only('should refund investors if goal is not reached in time', async function () {
+    it('should refund investors if goal is not reached in time', async function () {
       await increaseTimeTo(this.startTime + duration.days(0.5))
       //Buy period
       await this.crowdsale.buyTokens(investor, {value: ether(1), from: investor});
@@ -245,7 +245,6 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       await increaseTimeTo(this.startTime + duration.days(5))
       await this.crowdsale.buyTokens(investor3, {value: ether(1), from: investor3});
       const balance3 = web3.eth.getBalance(investor3);
-
       //Crowdsale end
       await increaseTimeTo(this.afterEndTime);
       console.log("finalize");
@@ -323,6 +322,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       releaseTime = web3.eth.getBlock(tx.receipt.blockNumber).timestamp;
       balance = await this.token.balanceOf(investor);
       console.log("Balance:" + balance);
+
       // internally if the releaseTime is bigger then vestingDuration, the total amount is sent
       // expectedVesting = amount.mul(releaseTime - this.vestingTime).div(this.vestingDuration).floor();
       // console.log("Expected Vesting:" + expectedVesting);
@@ -330,12 +330,63 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
     });
 
-    it('should have a succesfull crowdsale reaching cap, rejecting further buys and compensating vested tokens');
+    it('should have a succesfull crowdsale reaching cap, rejecting further buys and compensating vested tokens', async function(){
+        await this.tokenDistribution.changeRegistrationStatus(investor, ether(200))
+        await increaseTimeTo(this.startTime + duration.days(0.5))
+        await this.crowdsale.buyTokens(investor, {value: ether(200), from: investor}).should.be.fulfilled;
+        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(200), investor, {from: investor}).should.be.fulfilled;
 
-    it('should pause?');
+        await this.crowdsale.buyTokens(investor2, {value: ether(500), from: investor2}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor3, {value: ether(500), from: investor3}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor4, {value: ether(500), from: investor4}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor5, {value: ether(500), from: investor5}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor6, {value: ether(500), from: investor6}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor7, {value: ether(300), from: investor7}).should.be.fulfilled;
 
+        // cap reached should reject
+        await this.crowdsale.buyTokens(investor8, {value: ether(100), from: investor8}).should.be.rejectedWith(EVMRevert);
+
+        // can be finished before end time
+        await this.crowdsale.finalize().should.be.fulfilled;
+
+        await increaseTimeTo(this.vestingTime + duration.days(230));
+        await this.tokenDistribution.compensate(investor).should.be.fulfilled;
+
+        let newBalance = await this.token.balanceOf(investor);
+        newBalance.should.be.bignumber.equal(tokens);
+
+    })
+
+    it('should be pausable', async function(){
+      await increaseTimeTo(this.startTime + duration.days(1));
+      await this.crowdsale.buyTokens(investor2, {value: ether(500), from: investor2}).should.be.fulfilled;
+
+      await this.crowdsale.pause({from: owner}).should.be.fulfilled;
+      // can not invest more tokens from now
+      await this.crowdsale.buyTokens(investor, {value: ether(10), from: investor}).should.be.rejectedWith(EVMRevert);
+
+      await this.crowdsale.unpause({from: owner}).should.be.fulfilled;
+      // can invest more tokens from now
+      await this.crowdsale.buyTokens(investor, {value: ether(10), from: investor}).should.be.fulfilled;
+
+      //can be finished with ico paused after the end time
+      await this.crowdsale.pause({from: owner}).should.be.fulfilled;
+      await increaseTimeTo(this.afterEndTime);
+
+      await this.crowdsale.finalize().should.be.fulfilled;
+      //await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
+    })
+
+    it('check user invested amount', async function(){
+      await increaseTimeTo(this.startTime + duration.days(1));
+      await this.crowdsale.buyTokens(investor, {value: ether(100), from: investor}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor, {value: ether(10), from: investor}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor, {value: ether(200), from: investor}).should.be.fulfilled;
+
+      invested = await this.crowdsale.getInvestedAmount(investor).should.be.fulfilled;
+      invested.should.be.bignumber.equal(ether(310));
+      //await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
+    })
   });
-
-
 
 });
