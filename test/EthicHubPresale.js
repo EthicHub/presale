@@ -231,20 +231,20 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
 
     });
-    it('should refund investors if goal is not reached in time', async function () {
+    it.only('should refund investors if goal is not reached in time', async function () {
       await increaseTimeTo(this.startTime + duration.days(0.5))
       //Buy period
       await this.crowdsale.buyTokens(investor, {value: ether(1), from: investor});
-      const balance1 = web3.eth.getBalance(investor);
+      var balance1 = web3.eth.getBalance(investor);
 
       await this.crowdsale.buyTokens(investor2, {value: ether(1.999), from: investor2});
-      const balance2 = web3.eth.getBalance(investor2);
+      var balance2 = web3.eth.getBalance(investor2);
 
       await increaseTimeTo(this.startTime + duration.days(1.5))
       await this.crowdsale.buyTokens(investor3, {value: ether(1), from: investor3});
       await increaseTimeTo(this.startTime + duration.days(5))
       await this.crowdsale.buyTokens(investor3, {value: ether(1), from: investor3});
-      const balance3 = web3.eth.getBalance(investor3);
+      var balance3 = web3.eth.getBalance(investor3);
       //Crowdsale end
       await increaseTimeTo(this.afterEndTime);
       console.log("finalize");
@@ -254,19 +254,15 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       console.log("Refunds");
       // console.dir(this.crowdsale.claimRefund);
       // console.dir(EthicHubPresale._json.abi);
-      await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
-
-      let balance1_cur = new BigNumber(web3.eth.getBalance(investor))
-      console.log(typeof(balance1_cur))
-      console.log(typeof(balance1))
-      //.should.be.above(balance1.add(ether(0.9)));
+      var tx = await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
+      (new BigNumber(web3.eth.getBalance(investor))).should.be.bignumber.above(new BigNumber(balance1).add(ether(0.99)));
 
       await this.crowdsale.claimRefund({from:investor2}).should.be.fulfilled;
       // 0.1 eth less due to used gas
-      (new BigNumber(web3.eth.getBalance(investor2))).should.be.above(balance2.add(ether(1.899)));
+      new BigNumber(web3.eth.getBalance(investor2)).should.be.bignumber.above(new BigNumber(balance2).add(ether(1.899)));
       await this.crowdsale.claimRefund({from:investor3}).should.be.fulfilled;
       // 0.1 eth less due to used gas
-      (new BigNumber(web3.eth.getBalance(investor3))).should.be.above(balance3.add(ether(1.9)));
+      new BigNumber(web3.eth.getBalance(investor3)).should.be.bignumber.above(new BigNumber(balance3).add(ether(1.99)));
 
 
 
