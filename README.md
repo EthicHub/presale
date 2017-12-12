@@ -1,33 +1,50 @@
-# EthicHub presale
 
-These contracts model the presale of the ETX token to be used as the future mean to finance projects in the [Ethic Hub](https://ethichub.com) crowdlending platform.
+
+# EthicHub 1st Token Sale (presale.)
+
+These contracts model the presale of the ETX token to be used as the future mean to finance positive impact projects in the [Ethic Hub](https://ethichub.com) decentralized crowdlending platform.
+
+
+# There will be 4 token sales. 15% of the tokens are planned to be sold in each Token Sale, 13% for Investors and 2% for Bounties.
+Tokens not sold on each Token Sale will be sold in following ---> Token Sales or kept as . <--
+Price for the 2nd Token Sale will be 4x the price of the presale or 1st Token Sale.
+Tokens of presale or 1st Token Sale and 2nd Token Sale will be gradually realesed after 2nd Token Sale.
+3rd and 4th Token Sales price will be set up by [Vitalik Butterin Interactive Coin Offering Mechanism](https://drive.google.com/viewerng/viewer?url=https://people.cs.uchicago.edu/~teutsch/papers/ico.pdf).
+
+# KYC
+
+_In order to receive the tokens_, investors will have to pass a KYC proccess.
 
 # Dates:
-The presale will
-- Start accepting purchases in NNNNNN date, ZZZZ timezone.
-- Stop in ZZZ date.
-- The vesting period for the tokens will start when the next token sale after this ends.
-- The vesting period will end 100 days after.
+The presale or 1st Token sale will
+- Start accepting purchases in {PRESALE_START}
+- Stop in {PRESALE_START + 30 days} date.
+-
 
 # Milestones:
-- The minimum amount of funds needed to consider the presale valid is 1500 ethers. If this value is not reached before the presale end date, the funds will be claimable by the investores and they will be refunded.
+- The minimum amount of funds needed to consider the presale valid is {MIN_GOAL} ethers
+If this value is not reached before the presale end date, the funds will be claimable by the investors and they will be refunded.
 
-- The presale's hard cap is 6000 ethers. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
+-
+The presale's hard cap is {CAP} ethers. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
+
 
 
 # Token
 
 #### Ethix Token (ETX)
 
-- A finite number of XXXXX ETX will be pre-minted.
+- A finite number of 100,000,000 ETX will be minted.
 - There will be no more ETX tokens created.
 - The ETX will be ERC20 compatible.
 - The ETX token will have 18 decimals.
-- _The tokens will be sent to the investors AFTER the 1st ICO date, and not before_, folloring a gradual release explained in the correspondent section.
+
+_The tokens will be sent to the investors AFTER the end of the 1st Token Sale date, and not before_, following a gradual release schedule explained in the correspondent section.
+
 
 #### Distribution
 
-- YY% of XXXX tokens will be sold in the presale:
+- YY% of total tokens will be sold in the presale or 1st Token Sale:
 
 |            | Presale |
 |------------|---------|
@@ -37,10 +54,12 @@ The presale will
 | Promoters  | 20%     |
 | Bounties   | 2%      |
 
+
 #### Price
 
-- The rate will be of ZZZZ tokens per ether.
-- There will be a discount for early purchases, following this table:
+- For the Presale of 1st Token Sale the rate will be of {TOKEN_RATE} tokens per ether.
+
+There will be a discount for early purchases, following this table:
 | Days after presale start | Discount |
 |--------------------------|----------|
 | 1                        | 10%      |
@@ -51,35 +70,52 @@ The presale will
 
 After the 5th day, there will be no discount.
 
+
 #### Whitelists
 
-- Purchases done through a whitelisted wallet will have a discount of 20%.
-- The manager of the wallet will receive a 5% token comission.
-- To open a whitelist the wallet will have to do a deposit of 5 ethers.
+There will be a whitelist period open from {WHITELIST_PERIOD}.
+The whitelist will finish in {PRESALE_START}.
+If the whitelist reached an exected investment amount of {GOAL}, the presale list will close.
 
-# Token vesting
+Investors that register will provide.
+- KYC info.
+- Amount to invest in ethers.
+- Valid ERC20 Token Compatible Ethereum wallet {}
+
+When the 1st token sale starts, if the investors buy tokens with the same wallet registered in the presale sending an equal or higher amount of ethers than stated previously, _they will get a 20% discount purchasing tokens_ (not accumulable with they day discounts described previously).
+
+<a name="token vesting"> # Token vesting </a>
 
 - Ethix Tokens will not be sent to the investors wallet inmediately after purchase.
-- The vesting sschedule will be..
-|
-|
-------
-- After a vesting period, and deppending on the ether price, the investors will receive ///once a day\\\
+-
+The vesting period for the tokens sold during the presale or 1st Token Sale will start when the next token sale or 2nd Token Sale ends.
+-
+2nd Token sale will start about 200 days after the end of the presale or 1st Token Sale.
+The vesting period will end 100 days after.
 
 
-# Security considerations
+The vesting sschedule will be..
+{{VESTING_SCHEDULE TBD , pending cost analysis of sending tokens}}
+
+- After a vesting period, and deppending on the ether price, the investors will receive {{TOKEN_FREQUENCY}}
+
+
+
+# Project Promoters Tokens
+
+The Ethic Hub team will have 2 years vesting with 6 months cliffs.
+
+# Security considerations:
 
 The smart contracts are audited by:
 -
--
 ...
 
-The funds will be stored in a [Gnosis multisig wallet](https://wallet-website.gnosis.pm/) if the minimum amount of funds is reached. If not, the funds will be stored in an [OpenZeppelin's RefundVault smart contract](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/crowdsale/RefundVault.sol)
 
+The funds will be stored in a [Gnosis multisig wallet](https://wallet-website.gnosis.pm/) if the minimum amount of funds is reached.
 
+In case we don't reach the minimum amount, the funds will be stored in an [OpenZeppelin's RefundVault smart contract](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/crowdsale/RefundVault.sol)
 
+If the token sale ends without reaching the minimum goal, the funds will be refundable.
 
-
-[Open Zeppelin](https://github.com/OpenZeppelin/zeppelin-solidity) offers a collection of base contracts for crowdsale and tokens.
-
-We will study using [Minime token](https://github.com/Giveth/minime) for our ERC20 token (for its cloneable/ updatable capabilities).
+The _ONLY VALID ETHEREUM ADDRESS_ to send funds to is the one showed the presale website after the KYC proccess is completed. Don't send Ether to any other address.
