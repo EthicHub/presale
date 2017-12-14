@@ -1,8 +1,8 @@
 pragma solidity ^0.4.18;
 
 import './TokenDistributionStrategy.sol';
-import 'zeppelin-solidity/contracts/token/ERC20.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
+import 'minimetoken/contracts/MiniMeToken.sol';
 
 /**
  * @title FixedRateTokenDistributionStrategy
@@ -26,12 +26,12 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
   bool intervalsConfigured = false;
 
   // The token being sold
-  ERC20 token;
+  MiniMeToken token;
   mapping(address => uint256) contributions;
   uint256 totalContributed;
   //mapping(uint256 => DiscountInterval) discountIntervals;
 
-  function FixedPoolWithDiscountsTokenDistributionStrategy(ERC20 _token, uint256 _rate)
+  function FixedPoolWithDiscountsTokenDistributionStrategy(MiniMeToken _token, uint256 _rate)
            TokenDistributionStrategy(_rate) public
   {
     token = _token;
@@ -87,7 +87,7 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
     }
   }
 
-  function getToken() view returns(ERC20) {
+  function getToken() view returns(MiniMeToken) {
     return token;
   }
 

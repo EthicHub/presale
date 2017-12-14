@@ -18,7 +18,8 @@
     "solidity-coverage": "^0.4.0",
     "truffle": "^4.0.1",
     "truffle-hdwallet-provider": "0.0.3",
-    "zeppelin-solidity": "git+https://github.com/EthicHub/zeppelin-solidity.git#develop"
+    "minimetoken": "Giveth/minime#master",
+    "zeppelin-solidity": "EthicHub/zeppelin-solidity#develop"
   },
   "repository": {
     "type": "git",

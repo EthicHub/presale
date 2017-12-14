@@ -1,9 +1,9 @@
 pragma solidity ^0.4.18;
 
 
-import "zeppelin-solidity/contracts/token/PausableToken.sol";
+import "minimetoken/contracts/MiniMeToken.sol";
 
-contract EthixToken is PausableToken {
+contract EthixToken is MiniMeToken {
   string public constant name = "EthixToken";
   string public constant symbol = "ETX";
   uint8 public constant decimals = 18;
@@ -15,7 +15,7 @@ contract EthixToken is PausableToken {
   /**
    * @dev Constructor that gives msg.sender all of existing tokens.
    */
-  function EthixToken() PausableToken() public {
+  function EthixToken() public {
     totalSupply = INITIAL_SUPPLY;
     balances[owner] = totalSupply;
   }
