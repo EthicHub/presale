@@ -56,14 +56,47 @@ contract('EthicHubPresale', function ([owner, investor, investor2, investor3, wa
 
   })
 
-    //it('Crowsale should be pausable', async function(){
-    //  await this.crowsale.pause();
-    //  await this.crowsale.unpause();
-    //  await this.crowsale.normalProcess();
-    //  let count = await this.crowsale.count();
+  describe('Initialization', function() {
 
-    //  assert.equal(count, 1);
-    //});
+    it('should fulfilled initiate with intervals token distribution', async function () {
+      await this.tokenDistribution.initIntervals().should.be.fulfilled;
+    })
+    it('should fulfilled initiate with intervals token distribution', async function () {
+      await this.tokenDistribution.initIntervals().should.be.fulfilled;
+      await this.tokenDistribution.initIntervals().should.be.rejectedWith(EVMRevert);
+    })
+
+    it('should fail to set intervals if not owner', async function () {
+      await this.tokenDistribution.initIntervals({from:investor3}).should.be.rejectedWith(EVMRevert);
+
+    })
+
+    it("should create the owner", async function() {
+      (await this.tokenDistribution.owner()).should.be.equal(owner);
+    })
+
+    it("should transfer ownership", async function() {
+      console.log("tokenDistribution");
+      this.tokenDistribution.transferOwnership(investor2);
+      (await this.tokenDistribution.owner()).should.be.equal(investor2);
+      console.log("crowdsale");
+      console.log(investor2);
+      this.crowdsale.transferOwnership(investor2);
+      (await this.crowdsale.owner()).should.be.equal(investor2);
+
+    })
+
+
+    it("should set a cap when created", async function() {
+      (await this.crowdsale.cap()).should.be.bignumber.equal(cap);
+    });
+
+    it("should set a goal when created", async function() {
+      (await this.crowdsale.goal()).should.be.bignumber.equal(goal);
+    });
+
+  });
+
   describe('MiniMeToken', function() {
     it('should deploy all the contracts', async () => {
       const tokenFactory = await MiniMeTokenFactory.new(web3);

@@ -12,6 +12,14 @@ contract EthixToken is MiniMeToken {
   uint256 public constant INITIAL_SUPPLY = 100000000 * (10 ** uint256(decimals));
   uint256 public totalSupply;
 
+        tokenFactory = MiniMeTokenFactory(_tokenFactory);
+        name = _tokenName;                                 // Set the name
+        decimals = _decimalUnits;                          // Set the decimals
+        symbol = _tokenSymbol;                             // Set the symbol
+        parentToken = MiniMeToken(_parentToken);
+        parentSnapShotBlock = _parentSnapShotBlock;
+        transfersEnabled = _transfersEnabled;
+        creationBlock = block.number;
   /**
    * @dev Constructor that gives msg.sender all of existing tokens.
    */
