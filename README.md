@@ -5,7 +5,7 @@
 These contracts model the presale of the ETX token to be used as the future mean to finance positive impact projects in the [Ethic Hub](https://ethichub.com) decentralized crowdlending platform.
 
 
-# There will be 4 token sales. 15% of the tokens are planned to be sold in each Token Sale, 13% for Investors and 2% for Bounties.
+There are 4 planed token sales. 15% of the tokens are planned to be sold in each Token Sale, 13% for Investors and 2% for Bounties.
 Tokens not sold on each Token Sale will be sold in following ---> Token Sales or kept as . <--
 Price for the 2nd Token Sale will be 4x the price of the presale or 1st Token Sale.
 Tokens of presale or 1st Token Sale and 2nd Token Sale will be gradually realesed after 2nd Token Sale.
@@ -22,11 +22,10 @@ The presale or 1st Token sale will
 -
 
 # Milestones:
-- The minimum amount of funds needed to consider the presale valid is {MIN_GOAL} ethers
+- The minimum amount of funds needed to consider the presale valid is 1250 ETH
 If this value is not reached before the presale end date, the funds will be claimable by the investors and they will be refunded.
 
--
-The presale's hard cap is {CAP} ethers. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
+- The presale's hard cap is 2.750 ETH. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
 
 
 
@@ -44,20 +43,20 @@ _The tokens will be sent to the investors AFTER the end of the 1st Token Sale da
 
 #### Distribution
 
-- YY% of total tokens will be sold in the presale or 1st Token Sale:
+- 13% of total tokens will be sold in the presale or 1st Token Sale:
 
-|            | Presale |
-|------------|---------|
-| Investors  | 13%     |
-| To be sold | 45%     |
-| Reserve    | 20%     |
-| Promoters  | 20%     |
-| Bounties   | 2%      |
+|                   | Presale |
+|-------------------|---------|
+| Investors         | 13%     |
+| Reserve           | 20%     |
+| Promoters (team)  | 20%     |
+| Bounties          | 2%      |
+| For next sales    | 45%     |
 
 
 #### Price
 
-- For the Presale of 1st Token Sale the rate will be of {TOKEN_RATE} tokens per ether.
+- For the Presale of 1st Token Sale the rate will be of 4000 tokens per ether.
 
 There will be a discount for early purchases, following this table:
 | Days after presale start | Discount |
@@ -70,6 +69,7 @@ There will be a discount for early purchases, following this table:
 
 After the 5th day, there will be no discount.
 
+If included in the
 
 #### Whitelists
 
