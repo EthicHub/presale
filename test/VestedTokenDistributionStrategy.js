@@ -35,13 +35,15 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       this.vestingStart = this.endTime + duration.days(2);
       this.aftervestingStart = this.vestingStart + duration.seconds(1);
       this.vestingDuration = duration.days(100);
+      console.log("SimpleToken.new()");
       this.fixedPoolToken = await SimpleToken.new();
+            console.log("fixedPoolToken");
+
       const totalSupply = await this.fixedPoolToken.totalSupply();
       this.tokenDistribution = await VestedTokenDistributionStrategy.new(this.fixedPoolToken.address, RATE);
-
       await this.fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
 
-      this.crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address)
+      this.crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address);
       this.token = Token.at(await this.tokenDistribution.getToken.call());
     });
 
@@ -50,8 +52,9 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       await increaseTimeTo(this.startTime);
     });
 
-    it('should have an owner', async function() {
+    it.only('should have an owner', async function() {
       const resultOwner = await this.tokenDistribution.owner();
+      console.log(resultOwner);
       resultOwner.should.be.equal(owner);
     });
 
