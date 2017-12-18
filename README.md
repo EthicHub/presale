@@ -61,6 +61,7 @@ _The tokens will be sent to the investors AFTER the end of the 1st Token Sale da
 - For the Presale of 1st Token Sale the rate will be of 4000 tokens per ether.
 
 There will be a discount for early purchases, following this table:
+
 | Days after presale start | Discount |
 |--------------------------|----------|
 | 1                        | 10%      |
