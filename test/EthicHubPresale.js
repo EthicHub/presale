@@ -231,7 +231,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       await this.tokenDistribution.changeRegistrationStatus(investor, ether(5))
 
     });
-    it.only('should refund investors if goal is not reached in time', async function () {
+    it('should refund investors if goal is not reached in time', async function () {
       await increaseTimeTo(this.startTime + duration.days(0.5))
       //Buy period
       await this.crowdsale.buyTokens(investor, {value: ether(1), from: investor});
@@ -377,13 +377,13 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       //await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
     })
 
-    it('check user invested amount', async function(){
+    it.only('check user invested amount', async function(){
       await increaseTimeTo(this.startTime + duration.days(1));
       await this.crowdsale.buyTokens(investor, {value: ether(100), from: investor}).should.be.fulfilled;
       await this.crowdsale.buyTokens(investor, {value: ether(10), from: investor}).should.be.fulfilled;
       await this.crowdsale.buyTokens(investor, {value: ether(200), from: investor}).should.be.fulfilled;
 
-      invested = await this.crowdsale.getInvestedAmount(investor).should.be.fulfilled;
+      const invested = await this.crowdsale.getInvestedAmount(investor).should.be.fulfilled;
       invested.should.be.bignumber.equal(ether(310));
       //await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
     })
