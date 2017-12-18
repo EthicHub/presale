@@ -377,7 +377,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       //await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
     })
 
-    it.only('check user invested amount', async function(){
+    it('check user invested amount', async function(){
       await increaseTimeTo(this.startTime + duration.days(1));
       await this.crowdsale.buyTokens(investor, {value: ether(100), from: investor}).should.be.fulfilled;
       await this.crowdsale.buyTokens(investor, {value: ether(10), from: investor}).should.be.fulfilled;
