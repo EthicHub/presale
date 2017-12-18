@@ -277,19 +277,21 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
     it('should have a succesfull crowdsale not reaching cap and compensating vested tokens', async function(){
 
       await increaseTimeTo(this.startTime + duration.days(1));
+
       await this.crowdsale.buyTokens(investor2, {value: ether(500), from: investor2}).should.be.fulfilled;
 
       let amount = await this.tokenDistribution.calculateTokenAmount(ether(400), investor, {from: investor}).should.be.fulfilled;
       console.log("Amount:" + amount);
       await this.crowdsale.buyTokens(investor, {value: ether(400), from: investor}).should.be.fulfilled;
+      
       //await this.crowdsale.send(moreThanGoal);
       await increaseTimeTo(this.endTime + duration.days(1));
       await this.crowdsale.finalize().should.be.fulfilled;
 
       // Vested 1 day
       await increaseTimeTo(this.vestingTime + duration.days(1));
-      console.log("Amount/100:" + amount.div(100));
-      console.log("Vested Amount day 1:" + await this.tokenDistribution.vestedAmount(investor));
+      console.log("Token/100:" + amount.div(100));
+      console.log("Vested token day 1:" + await this.tokenDistribution.vestedAmount(investor));
       var tx = await this.tokenDistribution.compensate(investor).should.be.fulfilled;
       var releaseTime = web3.eth.getBlock(tx.receipt.blockNumber).timestamp;
       var balance = await this.token.balanceOf(investor);
@@ -300,8 +302,8 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
       // Vested middle duration
       await increaseTimeTo(this.vestingTime + duration.days(50));
-      console.log("Amount/2:" + amount.div(2));
-      console.log("Vested Amount middle:" + await this.tokenDistribution.vestedAmount(investor));
+      console.log("Token/2:" + amount.div(2));
+      console.log("Vested token middle:" + await this.tokenDistribution.vestedAmount(investor));
       tx = await this.tokenDistribution.compensate(investor).should.be.fulfilled;
       releaseTime = web3.eth.getBlock(tx.receipt.blockNumber).timestamp;
       balance = await this.token.balanceOf(investor);
@@ -311,9 +313,11 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       balance.should.bignumber.equal(expectedVesting);
 
       // Vested end duration
+
       await increaseTimeTo(this.vestingTime + duration.days(101));
       console.log("Amount:" + amount);
       console.log("Vested Amount end:" + await this.tokenDistribution.vestedAmount(investor));
+
       tx = await this.tokenDistribution.compensate(investor).should.be.fulfilled;
       releaseTime = web3.eth.getBlock(tx.receipt.blockNumber).timestamp;
       balance = await this.token.balanceOf(investor);
@@ -383,6 +387,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       invested.should.be.bignumber.equal(ether(310));
       //await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
     })
+
   });
 
 });
