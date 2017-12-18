@@ -61,7 +61,7 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
   function initIntervals() validateIntervals {
   }
 
-  function calculateTokenAmount(uint256 _weiAmount) view returns (uint256 tokens) {
+  function calculateTokenAmount(uint256 _weiAmount, address beneficiary) view returns (uint256 tokens) {
     // calculate discount in function of the time
     for (uint i = 0; i < discountIntervals.length; i++) {
       if (now <= discountIntervals[i].endPeriod) {

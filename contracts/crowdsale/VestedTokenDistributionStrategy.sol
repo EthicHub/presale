@@ -31,6 +31,7 @@ contract VestedTokenDistributionStrategy is Ownable, FixedPoolWithDiscountsToken
   }
 
   function VestedTokenDistributionStrategy(ERC20 _token, uint256 _rate)
+            Ownable()
             FixedPoolWithDiscountsTokenDistributionStrategy(_token, _rate) {
 
   }
