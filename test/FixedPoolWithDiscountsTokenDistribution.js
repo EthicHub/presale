@@ -64,7 +64,7 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
         await increaseTimeTo(this.startTime + duration.days(2*i))
         const investmentAmount = ether(0.000000000000000001);
         console.log("*** Amount: " + investmentAmount);
-        const newTokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount).should.be.fulfilled;
+        const newTokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount, investor).should.be.fulfilled;
         tokens = tokens.add(newTokens);
         console.log("*** COMPOSITION Tokens: " + tokens);
         let tx = await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
