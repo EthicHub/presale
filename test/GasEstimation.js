@@ -55,7 +55,7 @@ contract('EstimateCompensationGasUsed', function ([owner ,investor, investor2, i
 
   describe('test compensation gas used', function() {
 
-    it('calculate gas 8 persons', async function(){
+    it.skip('calculate gas 8 persons', async function(){
         await this.tokenDistribution.changeRegistrationStatus(investor, ether(200))
         await increaseTimeTo(this.startTime + duration.days(0.5))
         await this.tokenDistribution.configureVesting(this.vestingTime, this.vestingDuration)
@@ -91,7 +91,7 @@ contract('EstimateCompensationGasUsed', function ([owner ,investor, investor2, i
 
     })
 
-    it('calculate gas 4 persons', async function(){
+    it.skip('calculate gas 4 persons', async function(){
         await this.tokenDistribution.changeRegistrationStatus(investor, ether(200))
         await increaseTimeTo(this.startTime + duration.days(0.5))
         await this.tokenDistribution.configureVesting(this.vestingTime, this.vestingDuration)

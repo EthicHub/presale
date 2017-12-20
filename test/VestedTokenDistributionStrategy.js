@@ -12,7 +12,7 @@ const should = require('chai')
   .should()
 
 const CompositeCrowdsale = artifacts.require('CompositeCrowdsale');
-const VestedTokenDistributionStrategy = artifacts.require('./helpers/VestedTokenDistributionStrategyMock.sol');
+const VestedTokenDistributionStrategy = artifacts.require('VestedTokenDistributionStrategy');
 const Token = artifacts.require('ERC20');
 
 const SimpleToken = artifacts.require('SimpleToken');
@@ -52,7 +52,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       await increaseTimeTo(this.startTime);
     });
 
-    it.only('should have an owner', async function() {
+    it('should have an owner', async function() {
       const resultOwner = await this.tokenDistribution.owner();
       console.log(resultOwner);
       resultOwner.should.be.equal(owner);
@@ -94,7 +94,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
       const investmentAmount = ether(1);
       await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
-      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount);
+      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount, investor);
       const afterVestingStart = this.vestingStart + duration.minutes(2);
       await increaseTimeTo(afterVestingStart);
       const {receipt} = await this.tokenDistribution.compensate(investor);
@@ -109,7 +109,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       const investmentAmount = ether(1);
       await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
 
-      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount);
+      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount, investor);
 
       const vestingPeriod = this.vestingDuration;
       const checkpoints = 4;
@@ -141,7 +141,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
       const investmentAmount = ether(0.02);
       await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
-      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount);
+      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount, investor);
       increaseTimeTo(this.vestingStart + this.vestingDuration);
 
       await this.tokenDistribution.compensate(investor);
@@ -150,15 +150,15 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
     });
 
 
-    it('should fail to compensate if not owner', async function() {
+    it('should compensate if not owner', async function() {
       await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
       const investmentAmount = ether(1);
 
       await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
-      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount);
+      const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount, investor);
       increaseTimeTo(this.vestingStart + this.vestingDuration);
 
-      await this.tokenDistribution.compensate(investor,{from:investor}).should.be.rejectedWith(EVMRevert);
+      await this.tokenDistribution.compensate(investor,{from:investor}).should.be.fulfilled;
 
     });
 
