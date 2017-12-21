@@ -88,9 +88,9 @@ contract('IntervalTokenVesting', function (accounts) {
     await increaseTimeTo(this.start + duration.weeks(53));
 
     const vested = await this.vesting.vestedAmount(this.token.address);
-
+    console.log("VESTED");
     await this.vesting.revoke(this.token.address, { from: owner });
-
+    console.log(vested);
     const ownerBalance = await this.token.balanceOf(owner);
     ownerBalance.should.bignumber.equal(amount.sub(vested));
   });
