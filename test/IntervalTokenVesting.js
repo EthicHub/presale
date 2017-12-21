@@ -14,7 +14,7 @@ const IntervalTokenVesting = artifacts.require('./IntervalTokenVesting');
 
 contract('IntervalTokenVesting', function (accounts) {
 
-  const amount = new BigNumber(1000);
+  var amount;
   var owner = accounts[0];
   var beneficiary = accounts[1];
   
@@ -23,8 +23,10 @@ contract('IntervalTokenVesting', function (accounts) {
     this.start = latestTime() + duration.minutes(2); // +2 minute so it starts after contract instantiation
     this.periodDuration = duration.weeks(26);
     this.numPeriods = 4;
+    amount = await this.token.totalSupply();
     this.vesting = await IntervalTokenVesting.new(beneficiary, this.start, this.periodDuration, this.numPeriods, true, { from: owner });
     await this.token.transfer(this.vesting.address, amount);
+
   });
 
   it('cannot be released before start', async function () {
