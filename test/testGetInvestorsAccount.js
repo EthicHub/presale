@@ -55,7 +55,7 @@ contract('EstimateCompensationGasUsed', function ([owner ,investor, investor2, i
 
   describe('test compensation gas used', function() {
 
-    it('get investors from events', async function(){
+    it.skip('get investors from events', async function(){
         var initBlockNum = web3.eth.blockNumber;
         console.log(web3.eth.blockNumber)
         await this.tokenDistribution.changeRegistrationStatus(investor, ether(200))
