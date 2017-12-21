@@ -104,7 +104,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       balance.should.bignumber.equal(amount.mul(releaseTime - this.vestingStart).div(this.vestingDuration).floor());
     });
 
-    it('should linearly release tokens during vesting period', async function () {
+    it.only('should linearly release tokens during vesting period', async function () {
       await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
       const investmentAmount = ether(1);
       await this.crowdsale.buyTokens(investor, {value: investmentAmount, from: investor}).should.be.fulfilled;
@@ -132,11 +132,12 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       }
       //TODO after period should add 0
       //await this.tokenDistribution.compensate(investor);
-      //        const balance = await this.token.balanceOf(investor);
       //const balance = await this.token.balanceOf(investor);
 
     });
 
+    //FIXME
+    //Works by itself, does not work with the test suite
     it('should have released all after end', async function () {
       await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
       const investmentAmount = ether(0.02);
@@ -149,7 +150,8 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, wallet]
       balance.should.bignumber.equal(amount);
     });
 
-
+    //FIXME
+    //Works by itself, does not work with the test suite
     it('should compensate if not owner', async function() {
       await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
       const investmentAmount = ether(1);
