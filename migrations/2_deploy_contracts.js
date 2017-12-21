@@ -5,7 +5,7 @@ const EthixToken = artifacts.require('EthixToken.sol')
 module.exports = function(deployer, accounts) {
   var startDate = + new Date();
   var endDate = startDate + 1000;
-  /*deployer.deploy(EthixToken).then(function() {
+  deployer.deploy(EthixToken).then(function() {
     console.log("EthixToken deployed");
     return deployer.deploy(EthicHubTokenDistributionStrategy, 
     						EthixToken.address,
@@ -22,5 +22,5 @@ module.exports = function(deployer, accounts) {
   							console.log("EthicHubPresale deployed");
   						});
     });
-  });*/
+  });
 };
