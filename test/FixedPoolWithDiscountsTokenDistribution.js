@@ -49,16 +49,12 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
 
   describe('proving the intervals of the distribution', function () {
 
-    beforeEach(async function () {
 
+    it('should calculate tokens', async function () {
       for (var i = 0; i <= numIntervals; i++) {
         this.tokenDistribution.addInterval(this.startTime + duration.days(2*i+1), (numIntervals-i)*percentageDiscount);
       }
       await this.tokenDistribution.initIntervals();
-
-    })
-
-    it('should calculate tokens', async function () {
       var tokens = new BigNumber(0);
       for (var i = 0; i <= numIntervals; i++) {
         await increaseTimeTo(this.startTime + duration.days(2*i))
