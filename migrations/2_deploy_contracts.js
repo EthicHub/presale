@@ -3,7 +3,7 @@ const EthicHubTokenDistributionStrategy = artifacts.require('EthicHubTokenDistri
 const EthixToken = artifacts.require('EthixToken.sol')
 
 module.exports = function(deployer, accounts) {
-  var startDate = + new Date();
+  var startDate = new Date();
   var endDate = startDate + 1000;
   deployer.deploy(EthixToken).then(function() {
     console.log("EthixToken deployed");
