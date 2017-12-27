@@ -10,10 +10,9 @@ import './EthixToken.sol';
 
 contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, RefundableCompositeCrowdsale {
   //TODO hardcoding of parameters
-  uint256 public constant minimumBidAllowed = 0.25 ether;
+  uint256 public constant minimumBidAllowed = 0.1 ether;
   uint256 public constant maximumBidAllowed = 500 ether;
 
-  uint public constant GAS_LIMIT_IN_WEI = 50000000000 wei; // limit gas price -50 Gwei wales stopper
 
   mapping(address=>uint) public participated;
 
@@ -48,7 +47,6 @@ contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, Refunda
    * @return valid
    */
   function buyTokens(address beneficiary) whenNotPaused payable {
-    //require(tx.gasprice <= GAS_LIMIT_IN_WEI);
     require(msg.value >= minimumBidAllowed);
     require(participated[msg.sender].add(msg.value) <= maximumBidAllowed);
     participated[msg.sender] = participated[msg.sender].add(msg.value);
