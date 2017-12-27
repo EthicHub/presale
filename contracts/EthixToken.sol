@@ -5,7 +5,7 @@ import "zeppelin-solidity/contracts/token/PausableToken.sol";
 
 contract EthixToken is PausableToken {
   string public constant name = "EthixToken";
-  string public constant symbol = "ETX";
+  string public constant symbol = "ETHIX";
   uint8 public constant decimals = 18;
 
   //TODO set this

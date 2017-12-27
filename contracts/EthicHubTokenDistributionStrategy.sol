@@ -11,14 +11,13 @@ import './EthixToken.sol';
  * with a percentage deppending in when the contribution is made, defined by periods.
  * It's done in two steps. First, it registers all of the contributions while the sale is active.
  * After the crowdsale has ended the contract compensate buyers proportionally to their contributions.
- * This class is abstract, the intervals have to be defined by subclassing
- * Several whitelists are enabled
+ * Contributors registered to the whitelist will have better rates
  */
 contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionStrategy {
   //TODO hardcoding of parameters
 
-  function EthicHubTokenDistributionStrategy(EthixToken _token, uint256 _rate, uint256 _rateForInvestor)
-           WhitelistedDistributionStrategy(_token, _rate, _rateForInvestor)
+  function EthicHubTokenDistributionStrategy(EthixToken _token, uint256 _rate, uint256 _rateForWhitelisted)
+           WhitelistedDistributionStrategy(_token, _rate, _rateForWhitelisted)
            public
   {
 

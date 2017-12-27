@@ -10,6 +10,10 @@ import 'zeppelin-solidity/contracts/math/SafeMath.sol';
  * @dev A token holder contract that can release its token balance gradually like a
  * typical vesting scheme, with a period duration and number of periods. Optionally revocable by the
  * owner.
+<<<<<<< HEAD
+ * Team vesting contracts
+=======
+>>>>>>> master
  */
 contract IntervalTokenVesting is Ownable {
   using SafeMath for uint256;

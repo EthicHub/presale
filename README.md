@@ -24,10 +24,10 @@ The presale or 1st Token sale will
 -
 
 # Milestones:
-- The minimum amount of funds needed to consider the presale valid is 1250 ETH
+- The minimum amount of funds needed to consider the presale valid is 654 ETH
 If this value is not reached before the presale end date, the funds will be claimable by the investors and they will be refunded.
 
-- The presale's hard cap is 2.750 ETH. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
+- The presale's hard cap is 1,845 ETH. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
 
 
 
@@ -91,15 +91,17 @@ When the 1st token sale starts, if the investors buy tokens with the same wallet
 <a name="token vesting"> # Token vesting </a>
 
 - Ethix Tokens will not be sent to the investors wallet inmediately after purchase.
--The vesting period for the tokens sold during the presale or 1st Token Sale will start when the next token sale or 2nd Token Sale ends.
-- 2nd Token sale will start about 200 days after the end of the presale or 1st Token Sale.
+-The vesting period for the tokens sold during the presale or 1st Token Sale after the presale will start when the next token sale or 2nd Token Sale ends.
+- 2nd Token sale will start about 200 days after the end of the presale or 1st Token Sale after the presale
 The vesting period will end 100 days after.
 
 
-The vesting sschedule will be..
-{{VESTING_SCHEDULE TBD , pending cost analysis of sending tokens}}
+The token release schedule will be 100 days long with 10 token sending events, corresponding to :
 
-- After a vesting period, and deppending on the ether price, the investors will receive {{TOKEN_FREQUENCY}}
+```
+TokensReceivedInEvent = (totalTokensBought * ( eventTime - tokenVestingStart ) / 100) - tokensAlreadySentToBuyer
+```
+
 
 
 
