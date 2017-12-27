@@ -15,7 +15,6 @@
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.2",
     "ethereumjs-testrpc": "^6.0.2",
-    "moment-timezone": "^0.5.14",
     "solidity-coverage": "^0.4.0",
     "truffle": "^4.0.1",
     "truffle-hdwallet-provider": "0.0.3",

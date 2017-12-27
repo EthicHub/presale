@@ -1,14 +1,6 @@
 require('babel-register');
 require('babel-polyfill');
 
-var provider;
-var HDWalletProvider = require('truffle-hdwallet-provider');
-var mnemonic = '[REDACTED]';
-
-if (!process.env.SOLIDITY_COVERAGE){
-  provider = new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/')
-}
-
 
 module.exports = {
   networks: {
@@ -18,9 +10,12 @@ module.exports = {
       network_id: '*'
       //gasLimit: 0x47e7c4
     },
-    ropsten: {
-      provider: provider,
-      network_id: 3 // official id of the ropsten network
+    rinkeby: {
+      host: 'localhost',
+      port: 8545,
+      from: "0x9a3cee1fc3ffeebbc7be95d57da652654647e519", // default address to use for any transaction Truffle makes during migrations
+      network_id: 4,
+      gas: 4612388 // Gas limit used for deploys
     },
     coverage: {
       host: 'localhost',
