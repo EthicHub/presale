@@ -5,7 +5,7 @@ const EthixToken = artifacts.require('EthixToken.sol');
 const moment = require('moment');
 
 function latestTime() {
-  return web3.eth.getBlock('latest').timestamp;
+  return web3.eth.getBlock(web3.eth.blockNumber).timestamp;
 }
 const duration = {
   seconds: function (val) { return val },
@@ -24,71 +24,66 @@ function now() {
   return Math.round((new Date()).getTime() / 1000);
 }
 
-const RATE = new web3.BigNumber(6666);
-const WHITELIST_RATE = RATE.mul(20).div(100).add(RATE);
+
 const configurations = {
   rinkeby: {
-    start_date: (+ new Date() + duration.minutes(15)),
-    end_date: (+ new Date() + duration.minutes(15)),
-    token_eth_rate: RATE,
-    whitelisted_token_eth_rate: WHITELIST_RATE,
+    start_date: () => { return (latestTime() + duration.minutes(15))},
+    end_date: () => { return (latestTime() + duration.days(7) + duration.seconds(2)) },
     goal: ether(1),
     cap: ether(2),
     wallet: "0x4b9eaD77C85890477F3aCE286ddcaf9a342C33B4",
-    token_sold_percentage: 20,
+
   },
   develop: {
-    start_date: new web3.BigNumber(1514340337),
-    end_date: new web3.BigNumber(1514372737),
-    token_eth_rate: RATE,
-    whitelisted_token_eth_rate: WHITELIST_RATE,
+    start_date: () => { return (latestTime() + duration.minutes(15))},
+    end_date: () => { return (latestTime() + duration.days(7) + duration.seconds(2)) },
     goal: ether(1),
     cap: ether(2),
     wallet: "0x821aea9a577a9b44299b9c15c88cf3087f3b5544",
-    token_sold_percentage: 20,
+
   }
 }
 
-
+const TOKEN_SOLD_PERCENTAGE = 20;
 
 module.exports = function(deployer,network, accounts) {
+  console.log("--> Retrieving token");
 
   EthixToken.deployed().then(function(token) {
+    if (network === "development") {
+      network = "develop";
+    }
     const config = configurations[network];
-    console.log("--> "+token.address);
+    console.log("--> Deploying Token...");
     TokenDistributionStrategy.deployed().then((distribution) => {
-      console.log("--> "+distribution.address);
-      console.log("------>");
-      console.log(config);
-      console.log(latestTime());
+      console.log("--> Deploying Presale...");
       deployer.deploy(Presale,
-                        config.start_date,
-                        config.end_date,
+                        config.start_date(),
+                        config.end_date(),
                         config.goal,
                         config.cap,
-                        TokenDistributionStrategy.address)
+                        config.wallet,
+                        distribution.address)
               .then(() => {
+        console.log("--> Retrieving tokenSupply");
 
+        token.totalSupply().then((supply) => {
+          console.log("--> All tokens: "+supply);
+          const presaleSupply = supply.mul(TOKEN_SOLD_PERCENTAGE).div(100);
+          console.log("--> Transfering tokens to TokenDistributionStrategy: "+presaleSupply);
+          token.transfer(TokenDistributionStrategy.address, presaleSupply).then( () => {
+            console.log("--> Initializing intervals...");
+            distribution.initIntervals().then(() => {
+              distribution.getIntervals().then((intervals) => {
+               console.log(intervals);
+               console.log("--> Presale configured!")
+              });
+            });
+          });
+        });
       });
     });
   });
 };
 
 
-
-            // TokenDistributionStrategy.deployed().then((distribution) => {
-            //   console.log(distribution);
-            //   distribution.initIntervals().then(() => {
-
-            //     console.log("--> TokenDistributionStrategy initialized");
-            //     EthixToken.deployed().then((token) => {
-            //       token.totalSupply((supply) => {
-            //         const presaleSupply = supply.mul(config.token_sold_percentage).div(100);
-            //         token.transfer(TokenDistributionStrategy.address, presaleSupply).then( () => {
-            //           console.log("Presale configured");
-            //       });
-            //     });
-            //   });
-              
-            // });
-        
