@@ -78,6 +78,7 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
   function distributeTokens(address _beneficiary, uint256 _tokenAmount) onlyCrowdsale {
     contributions[_beneficiary] = contributions[_beneficiary].add(_tokenAmount);
     totalContributed = totalContributed.add(_tokenAmount);
+    require(totalContributed <= token.balanceOf(this));
   }
 
   function compensate(address _beneficiary) {
