@@ -64,6 +64,7 @@ contract IntervalTokenVesting is Ownable {
     uint256 unreleased = releasableAmount(token);
 
     require(unreleased > 0);
+    require(!revoked[token]);
 
     released[token] = released[token].add(unreleased);
 
@@ -119,5 +120,12 @@ contract IntervalTokenVesting is Ownable {
         }
     }
     return totalBalance.mul(vestedPeriods).div(numPeriods);
+  }
+  function drainToken(ERC20Basic token) external onlyOwner {
+    token.safeTransfer(owner, token.balanceOf(this));
+  }
+
+  function drainEth() external onlyOwner {
+    owner.transfer(this.balance);
   }
 }
