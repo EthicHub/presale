@@ -14,6 +14,7 @@ import 'zeppelin-solidity/contracts/math/SafeMath.sol';
  */
 contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStrategy {
   using SafeMath for uint256;
+  uint256 constant MAX_DISCOUNT = 100;
 
   // Definition of the interval when the discount is applicable
   struct DiscountInterval {
@@ -48,6 +49,7 @@ contract FixedPoolWithDiscountsTokenDistributionStrategy is TokenDistributionStr
     intervalsConfigured = true;
     require(discountIntervals.length > 0);
     for(uint i = 0; i < discountIntervals.length; ++i) {
+      require(discountIntervals[i].discount <= MAX_DISCOUNT);
       require(discountIntervals[i].discount >= 0);
       require(crowdsale.startTime() < discountIntervals[i].endPeriod);
       require(discountIntervals[i].endPeriod <= crowdsale.endTime());
