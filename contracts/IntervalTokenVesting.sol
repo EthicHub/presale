@@ -47,6 +47,7 @@ contract IntervalTokenVesting is Ownable {
     require(_beneficiary != address(0));
     require(_periodDuration > 0);
     require(_numPeriods > 0 );
+    require(_numPeriods <= 10 );
 
     beneficiary = _beneficiary;
     revocable = _revocable;
