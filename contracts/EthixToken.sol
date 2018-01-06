@@ -18,6 +18,7 @@ contract EthixToken is PausableToken {
   function EthixToken() PausableToken() public {
     totalSupply = INITIAL_SUPPLY;
     balances[owner] = totalSupply;
+    Transfer(0x0, owner, INITIAL_SUPPLY);
   }
 
 }
