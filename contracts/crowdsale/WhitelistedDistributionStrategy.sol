@@ -9,6 +9,8 @@ import './VestedTokenDistributionStrategy.sol';
  *
  */
 contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStrategy {
+    uint256 public constant maximumBidAllowed = 500 ether;
+
     uint256 rate_for_investor;
     mapping(address=>uint) public registeredAmount;
 
@@ -28,6 +30,7 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
         public
         onlyOwner
     {
+        require(amount <= maximumBidAllowed);
         registeredAmount[target] = amount;
         if (amount > 0){
             RegistrationStatusChanged(target, true);
