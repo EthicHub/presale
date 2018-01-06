@@ -114,7 +114,7 @@ contract IntervalTokenVesting is Ownable {
         return totalBalance;
     }
     for(uint i=numPeriods; i>=1; i--){
-        if (now >= start + periodDuration.mul(i)){
+        if (now >= start.add(periodDuration.mul(i))){
             vestedPeriods = i;
             break;
         }
