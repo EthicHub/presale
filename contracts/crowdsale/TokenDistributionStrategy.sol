@@ -3,12 +3,13 @@ pragma solidity ^0.4.18;
 import 'zeppelin-solidity/contracts/token/ERC20.sol';
 import './CompositeCrowdsale.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 /**
  * @title TokenDistributionStrategy
  * @dev Base abstract contract defining methods that control token distribution
  */
-contract TokenDistributionStrategy {
+contract TokenDistributionStrategy is Ownable {
   using SafeMath for uint256;
 
   CompositeCrowdsale crowdsale;
@@ -27,6 +28,8 @@ contract TokenDistributionStrategy {
   function initializeDistribution(CompositeCrowdsale _crowdsale) {
     require(crowdsale == address(0));
     require(_crowdsale != address(0));
+    address crowdsale_owner = _crowdsale.owner();
+    require(crowdsale_owner == owner);
     crowdsale = _crowdsale;
   }
 

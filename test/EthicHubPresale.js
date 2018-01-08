@@ -87,6 +87,12 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       (await this.crowdsale.goal()).should.be.bignumber.equal(goal);
     });
 
+    it("should fail if the crowdsale owner and distribution owner are different", async function() {
+      const fixedPoolToken = await EthixToken.new();
+      const someTokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE,whitelistRate);
+      await EthicHubPresale.new(this.startTime, this.endTime, goal, cap, wallet, someTokenDistribution.address, {from: investor}).should.be.eventually.rejectedWith(EVMRevert);
+    });
+
   });
 
   describe('when buying tokens', function() {

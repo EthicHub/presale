@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 import './FixedPoolWithDiscountsTokenDistributionStrategy.sol';
 import 'zeppelin-solidity/contracts/token/ERC20.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+
 
 /**
  * @title VestedTokenDistributionStrategy
@@ -11,7 +11,7 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
  * It's done in two steps. First, it registers all of the contributions while the sale is active.
  * After the crowdsale has ended the contract compensate buyers proportionally to their contributions.
  */
-contract VestedTokenDistributionStrategy is Ownable, FixedPoolWithDiscountsTokenDistributionStrategy {
+contract VestedTokenDistributionStrategy is FixedPoolWithDiscountsTokenDistributionStrategy {
 
 
   event Released(address indexed beneficiary, uint256 indexed amount);
