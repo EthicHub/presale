@@ -1,3 +1,4 @@
+import ether from './helpers/ether'
 import {advanceBlock} from './helpers/advanceToBlock'
 import {increaseTimeTo, duration} from './helpers/increaseTime'
 import latestTime from './helpers/latestTime'
@@ -30,6 +31,7 @@ contract('FinalizableCompositeCrowdsale', function ([_, owner, wallet, thirdpart
     const fixedPoolToken = await SimpleToken.new();
     const totalSupply = await fixedPoolToken.totalSupply();
     this.tokenDistribution = await TokenDistribution.new(fixedPoolToken.address, RATE);
+    fixedPoolToken.transfer(this.tokenDistribution.address, 100000000 * ether(1))
 
 
     this.crowdsale = await FinalizableCompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address, {from: owner})

@@ -39,7 +39,6 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
     this.tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
 
     this.crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address);
-
     await fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
     this.token = Token.at(await this.tokenDistribution.getToken.call());
 
@@ -58,7 +57,7 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
       var tokens = new BigNumber(0);
       for (var i = 0; i <= numIntervals; i++) {
         await increaseTimeTo(this.startTime + duration.days(2*i))
-        const investmentAmount = ether(0.000000000000000001);
+        const investmentAmount = ether(1);
         console.log("*** Amount: " + investmentAmount);
         const newTokens = await this.tokenDistribution.calculateTokenAmount(investmentAmount, investor).should.be.fulfilled;
         tokens = tokens.add(newTokens);
@@ -116,9 +115,9 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
     })
 
     it('should fail because next interval period < previous interval period', async function () {
-      this.tokenDistribution.addInterval(this.startTime + duration.seconds(2), 1);
+      this.tokenDistribution.addInterval(this.startTime + duration.seconds(200), 1);
       this.tokenDistribution.addInterval(this.startTime + duration.seconds(1), 1);
-      console.log(`first interval period:  ${this.startTime + duration.seconds(2)}`);
+      console.log(`first interval period:  ${this.startTime + duration.seconds(200)}`);
       console.log(`second interval period:  ${this.startTime + duration.seconds(1)}`);
       await this.tokenDistribution.initIntervals().should.be.rejectedWith(EVMRevert);
     })

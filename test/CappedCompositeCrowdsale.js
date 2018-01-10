@@ -32,7 +32,7 @@ contract('CappedCompositeCrowdsale', function ([_, wallet]) {
     const fixedPoolToken = await SimpleToken.new();
     const totalSupply = await fixedPoolToken.totalSupply();
     this.tokenDistribution = await TokenDistribution.new(fixedPoolToken.address, RATE);
-
+    fixedPoolToken.transfer(this.tokenDistribution.address, 100000000 * ether(1))
     this.crowdsale = await CappedCompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address, cap)
   })
 
