@@ -15,10 +15,11 @@ mainmenu () {
   echo "x - exit program"
 
   read  -n 1 -p "Input Selection:" mainmenuinput
+  echo ""
   if [ "$mainmenuinput" = "1" ]; then
             bash $SCRIPT_PATH test/EthicHubPresale.js
         elif [ "$mainmenuinput" = "2" ]; then
-            bash $SCRIPT_PATH test/CappedCompositeCrowdsale.js test/helpers/CappedCompositeCrowdsaleImpl.sol
+            bash $SCRIPT_PATH test/CappedCompositeCrowdsale.js test/helpers/CappedCompositeCrowdsaleImpl.sol test/helpers/FixedPoolWithDiscountsTokenDistributionMock.sol
         elif [ "$mainmenuinput" = "3" ]; then
             bash $SCRIPT_PATH test/FixedPoolWithDiscountsTokenDistribution.js test/helpers/FixedPoolWithDiscountsTokenDistributionMock.sol
         elif [ "$mainmenuinput" = "4" ]; then
