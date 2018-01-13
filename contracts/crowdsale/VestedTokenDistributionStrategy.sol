@@ -57,6 +57,7 @@ contract VestedTokenDistributionStrategy is Ownable, FixedPoolWithBonusTokenDist
    * @param  _beneficiary crowdsale contributor
    */
    function compensate(address _beneficiary) public vestingPeriodStarted {
+     require(msg.sender == owner || msg.sender == _beneficiary);
      uint256 unreleased = releasableAmount(_beneficiary);
 
      require(unreleased > 0);
