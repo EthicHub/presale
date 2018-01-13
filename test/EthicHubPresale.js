@@ -123,7 +123,7 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
     })
 
     it('should calculate tokens', async function () {
-      var [endPeriods, discounts] = await this.tokenDistribution.getIntervals();
+      var [endPeriods, bonus] = await this.tokenDistribution.getIntervals();
       var tokens = new BigNumber(0);
       const investmentAmount = ether(1);
       console.log(`*** Amount:  ${investmentAmount}`);

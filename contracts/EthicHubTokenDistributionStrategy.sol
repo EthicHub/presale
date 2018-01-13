@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-import './crowdsale/FixedPoolWithDiscountsTokenDistributionStrategy.sol';
+import './crowdsale/FixedPoolWithBonusTokenDistributionStrategy.sol';
 import './crowdsale/WhitelistedDistributionStrategy.sol';
 import './EthixToken.sol';
 
@@ -26,12 +26,12 @@ contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionSt
 
   // Init intervals
   function initIntervals() onlyOwner validateIntervals  {
-    discountIntervals.push(DiscountInterval(crowdsale.startTime() + 1 days,10));
-    discountIntervals.push(DiscountInterval(crowdsale.startTime() + 2 days,8));
-    discountIntervals.push(DiscountInterval(crowdsale.startTime() + 3 days,6));
-    discountIntervals.push(DiscountInterval(crowdsale.startTime() + 4 days,4));
-    discountIntervals.push(DiscountInterval(crowdsale.startTime() + 5 days,2));
-    discountIntervals.push(DiscountInterval(crowdsale.startTime() + 6 days,0));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 1 days,10));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 2 days,8));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 3 days,6));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 4 days,4));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 5 days,2));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 6 days,0));
   }
 
 }

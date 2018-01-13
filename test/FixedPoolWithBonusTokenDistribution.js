@@ -12,16 +12,16 @@ const should = require('chai')
   .should()
 
 const CompositeCrowdsale = artifacts.require('CompositeCrowdsale')
-const FixedPoolWithDiscountsTokenDistributionMock = artifacts.require('./helpers/FixedPoolWithDiscountsTokenDistributionMock');
+const FixedPoolWithBonusTokenDistributionMock = artifacts.require('./helpers/FixedPoolWithBonusTokenDistributionMock');
 const Token = artifacts.require('ERC20')
 
 const SimpleToken = artifacts.require('SimpleToken')
 
-contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wallet]) {
+contract('FixedPoolWithBonusTokenDistribution', function ([_, investor, wallet]) {
 
   const RATE = new BigNumber(4000);
   const numIntervals = 3;
-  const percentageDiscount = 10;
+  const percentageBonus = 10;
 
   before(async function() {
     //Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
@@ -36,7 +36,7 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
 
     const fixedPoolToken = await SimpleToken.new();
     const totalSupply = await fixedPoolToken.totalSupply();
-    this.tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
+    this.tokenDistribution = await FixedPoolWithBonusTokenDistributionMock.new(fixedPoolToken.address,RATE);
 
     this.crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, this.tokenDistribution.address);
     await fixedPoolToken.transfer(this.tokenDistribution.address, totalSupply);
@@ -51,7 +51,7 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
 
     it('should calculate tokens', async function () {
       for (var i = 0; i <= numIntervals; i++) {
-        this.tokenDistribution.addInterval(this.startTime + duration.days(2*i+1), (numIntervals-i)*percentageDiscount);
+        this.tokenDistribution.addInterval(this.startTime + duration.days(2*i+1), (numIntervals-i)*percentageBonus);
       }
       await this.tokenDistribution.initIntervals();
       var tokens = new BigNumber(0);
@@ -73,7 +73,7 @@ contract('FixedPoolWithDiscountsTokenDistribution', function ([_, investor, wall
 
     it('should fail to set intervals twice',async function () {
       const fixedPoolToken = await SimpleToken.new();
-      const tokenDistribution = await FixedPoolWithDiscountsTokenDistributionMock.new(fixedPoolToken.address,RATE);
+      const tokenDistribution = await FixedPoolWithBonusTokenDistributionMock.new(fixedPoolToken.address,RATE);
       const crowdsale = await CompositeCrowdsale.new(this.startTime, this.endTime, wallet, tokenDistribution.address);
       tokenDistribution.addInterval(this.startTime + duration.days(1), 1);
       await tokenDistribution.initIntervals().should.be.fulfilled;

@@ -12,7 +12,7 @@ require('chai')
   .should()
 
 const RefundableCompositeCrowdsale = artifacts.require('./helpers/RefundableCompositeCrowdsaleImpl.sol')
-const TokenDistribution = artifacts.require('FixedPoolWithDiscountsTokenDistributionStrategy')
+const TokenDistribution = artifacts.require('FixedPoolWithBonusTokenDistributionStrategy')
 const SimpleToken = artifacts.require('SimpleToken')
 
 contract('RefundableCompositeCrowdsale', function ([_, owner, wallet, investor]) {
