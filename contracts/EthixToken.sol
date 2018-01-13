@@ -15,7 +15,7 @@ contract EthixToken is PausableToken {
   /**
    * @dev Constructor that gives msg.sender all of existing tokens.
    */
-  function EthixToken() PausableToken() public {
+  function EthixToken() public {
     totalSupply = INITIAL_SUPPLY;
     balances[owner] = totalSupply;
     Transfer(0x0, owner, INITIAL_SUPPLY);

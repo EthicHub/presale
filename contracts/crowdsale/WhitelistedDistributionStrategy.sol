@@ -48,6 +48,7 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
         public
         onlyOwner
     {
+        require(targets.length == amounts.length);
         for (uint i = 0; i < targets.length; i++) {
             changeRegistrationStatus(targets[i], amounts[i]);
         }

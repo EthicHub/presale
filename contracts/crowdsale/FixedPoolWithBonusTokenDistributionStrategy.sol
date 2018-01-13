@@ -5,9 +5,9 @@ import 'zeppelin-solidity/contracts/token/ERC20.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
 /**
- * @title FixedRateTokenDistributionStrategy
+ * @title FixedPoolWithBonusTokenDistributionStrategy 
  * @dev Strategy that distributes a fixed number of tokens among the contributors,
- * with a percentage deppending in when the contribution is made, defined by periods.
+ * with a percentage depending in when the contribution is made, defined by periods.
  * It's done in two steps. First, it registers all of the contributions while the sale is active.
  * After the crowdsale has ended the contract compensate buyers proportionally to their contributions.
  * This class is abstract, the intervals have to be defined by subclassing

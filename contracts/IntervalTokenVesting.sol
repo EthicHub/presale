@@ -10,9 +10,7 @@ import 'zeppelin-solidity/contracts/math/SafeMath.sol';
  * @dev A token holder contract that can release its token balance gradually like a
  * typical vesting scheme, with a period duration and number of periods. Optionally revocable by the
  * owner.
-<<<<<<< HEAD
  * Team vesting contracts
-=======
 >>>>>>> master
  */
 contract IntervalTokenVesting is Ownable {
@@ -20,7 +18,7 @@ contract IntervalTokenVesting is Ownable {
   using SafeERC20 for ERC20Basic;
 
   event Released(uint256 amount);
-  event Revoked();
+  event Revoked(uint256 refundValue, address tokenAddress);
 
   // beneficiary of tokens after they are released
   address public beneficiary;
@@ -92,14 +90,14 @@ contract IntervalTokenVesting is Ownable {
 
     token.safeTransfer(owner, refund);
 
-    Revoked();
+    Revoked(refund, address(token));
   }
 
   /**
    * @dev Calculates the amount that has already vested but hasn't been released yet.
    * @param token ERC20 token which is being vested
    */
-  function releasableAmount(ERC20Basic token) public constant returns (uint256) {
+  function releasableAmount(ERC20Basic token) public view returns (uint256) {
     return vestedAmount(token).sub(released[token]);
   }
 
@@ -107,7 +105,7 @@ contract IntervalTokenVesting is Ownable {
    * @dev Calculates the amount that has already vested.
    * @param token ERC20 token which is being vested
    */
-  function vestedAmount(ERC20Basic token) public constant returns (uint256) {
+  function vestedAmount(ERC20Basic token) public view returns (uint256) {
     uint256 currentBalance = token.balanceOf(this);
     uint256 totalBalance = currentBalance.add(released[token]);
     uint256 vestedPeriods = 0;

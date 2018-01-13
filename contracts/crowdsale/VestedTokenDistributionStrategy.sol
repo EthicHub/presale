@@ -82,7 +82,7 @@ contract VestedTokenDistributionStrategy is Ownable, FixedPoolWithBonusTokenDist
    * Calculates how many tokens the beneficiary have vested
    * vested = how many does she have according to the time
    * @param  _beneficiary address of the contributor that needs the tokens
-   * @return token
+   * @return amount of tokens
    */
   function vestedAmount(address _beneficiary) public view returns (uint256) {
     uint256 totalBalance = contributions[_beneficiary];

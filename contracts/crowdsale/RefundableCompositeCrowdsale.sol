@@ -8,7 +8,7 @@ import 'zeppelin-solidity/contracts/crowdsale/RefundVault.sol';
 
 /**
  * @title RefundableCompositeCrowdsale
- * @dev Extension of Crowdsale contract that adds a funding goal, and
+ * @dev Extension of CompositeCrowdsale contract that adds a funding goal, and
  * the possibility of users getting a refund if goal is not met.
  * Uses a RefundVault as the crowdsale's vault.
  */

@@ -13,9 +13,6 @@ import './TokenDistributionStrategy.sol';
  * which is a dedicated smart contract that delegates all of the logic managing
  * token distribution.
  *
- * CompositeCrowdsale is at the WIP stage and is meant to illustrate composition
- * approach for managing crowdsale logic. It shouldn't be used in production code
- * before necessary upgrades and testing.
  */
 contract CompositeCrowdsale {
   using SafeMath for uint256;
@@ -47,6 +44,7 @@ contract CompositeCrowdsale {
     require(_startTime >= now);
     require(_endTime >= _startTime);
     require(_wallet != 0x0);
+    require(address(_tokenDistribution) != address(0));
 
     startTime = _startTime;
     endTime = _endTime;

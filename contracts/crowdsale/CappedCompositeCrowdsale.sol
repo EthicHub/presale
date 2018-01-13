@@ -5,7 +5,7 @@ import './CompositeCrowdsale.sol';
 
 /**
  * @title CappedCompositeCrowdsale
- * @dev Extension of Crowdsale with a max amount of funds raised
+ * @dev Extension of CompositeCrowdsale with a max amount of funds raised
  */
 contract CappedCompositeCrowdsale is CompositeCrowdsale {
   using SafeMath for uint256;
