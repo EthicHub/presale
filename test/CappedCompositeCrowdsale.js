@@ -12,7 +12,7 @@ require('chai')
   .should()
 
 const CappedCompositeCrowdsale = artifacts.require('./helpers/CappedCompositeCrowdsaleImpl.sol')
-const TokenDistribution = artifacts.require('FixedPoolWithDiscountsTokenDistributionStrategy')
+const TokenDistribution = artifacts.require('FixedPoolWithBonusTokenDistributionStrategy')
 const SimpleToken = artifacts.require('SimpleToken')
 
 contract('CappedCompositeCrowdsale', function ([_, wallet]) {

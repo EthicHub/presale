@@ -17,7 +17,7 @@ contract VestedTokenDistributionStrategyMock is VestedTokenDistributionStrategy 
 
   function initializeDistribution(CompositeCrowdsale _crowdsale) {
     super.initializeDistribution(_crowdsale);
-    discountIntervals.push(DiscountInterval(crowdsale.startTime(),0));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime(),0));
 
   }
 }

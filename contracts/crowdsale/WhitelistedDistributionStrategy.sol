@@ -24,7 +24,7 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
     /**
      * @dev Changes registration status of an address for participation.
      * @param target Address that will be registered/deregistered.
-     * @param amount the amount of eht to invest for a investor discount.
+     * @param amount the amount of eht to invest for a investor bonus.
      */
     function changeRegistrationStatus(address target, uint256 amount)
         public
@@ -42,12 +42,13 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
     /**
      * @dev Changes registration statuses of addresses for participation.
      * @param targets Addresses that will be registered/deregistered.
-     * @param amounts the list of amounts of eth for every investor to invest for a investor discount.
+     * @param amounts the list of amounts of eth for every investor to invest for a investor bonus.
      */
     function changeRegistrationStatuses(address[] targets, uint256[] amounts)
         public
         onlyOwner
     {
+        require(targets.length == amounts.length);
         for (uint i = 0; i < targets.length; i++) {
             changeRegistrationStatus(targets[i], amounts[i]);
         }
@@ -55,7 +56,7 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
 
     /**
      * @dev overriding calculateTokenAmount for whilelist investors
-     * @return discounted rate if it applies for the investor,
+     * @return bonus rate if it applies for the investor,
      * otherwise, return token amount according to super class
      */
 
