@@ -2,7 +2,9 @@ pragma solidity ^0.4.18;
 
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './TokenDistributionStrategy.sol';
+
 
 /**
  * @title CompositeCrowdsale
@@ -14,7 +16,7 @@ import './TokenDistributionStrategy.sol';
  * token distribution.
  *
  */
-contract CompositeCrowdsale {
+contract CompositeCrowdsale is Ownable {
   using SafeMath for uint256;
 
   // The token being sold

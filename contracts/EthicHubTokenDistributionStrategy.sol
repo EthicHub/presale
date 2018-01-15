@@ -28,6 +28,10 @@ contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionSt
 
   // Init intervals
   function initIntervals() onlyOwner validateIntervals  {
+
+    //For extra security, we check the owner of the crowdsale is the same of the owner of the distribution
+    require(owner == crowdsale.owner());
+
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 1 days,10));
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 2 days,8));
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 3 days,6));
