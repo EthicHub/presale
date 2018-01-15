@@ -90,15 +90,11 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
   });
 
   describe('Crowdsale and TokenDistribution', function() {
-    it.only('should have the same owner', async function() {
-      console.log("--token");
+    it('should have the same owner', async function() {
       const fixedPoolToken = await EthixToken.new();
-      console.log("--tokenDistribution");
-      const tokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE,{from:investor});
-      console.log("--EthicHubPresale");
+      const tokenDistribution = await EthicHubTokenDistribution.new(fixedPoolToken.address,RATE,whitelistRate,{from:investor2});
       const crowdsale = await EthicHubPresale.new(this.startTime, this.endTime, goal, cap, wallet, tokenDistribution.address);
-      console.log("--tokenDistribution");
-      await tokenDistribution.initIntervals().should.be.rejectedWith(EVMRevert);
+      await tokenDistribution.initIntervals({from:investor2}).should.be.rejectedWith(EVMRevert);
     });
   })
 
@@ -397,14 +393,14 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
         await this.crowdsale.buyTokens(investor7, {value: ether(300), from: investor7}).should.be.fulfilled;
         investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(300),investor7, {from: investor7}));
 
-
         // cap reached should reject
         await this.crowdsale.buyTokens(investor8, {value: ether(100), from: investor8}).should.be.rejectedWith(EVMRevert);
-
         // can be finished before end time
+        await increaseTimeTo(this.afterEndTime);
         await this.crowdsale.finalize().should.be.fulfilled;
 
         await increaseTimeTo(this.vestingTime + duration.days(230));
+
         await this.tokenDistribution.compensate(investor).should.be.fulfilled;
 
 
