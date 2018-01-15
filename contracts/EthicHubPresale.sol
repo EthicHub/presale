@@ -61,4 +61,12 @@ contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, Refunda
   function getInvestedAmount(address investor) view public returns(uint investedAmount){
     investedAmount = participated[investor];
   }
+
+  /**
+  * When the crowdsale is finished, we send the remaining tokens back to the wallet
+  */
+  function finalization() internal {
+    super.finalization();
+    tokenDistribution.returnUnsoldTokens(wallet);
+  }
 }
