@@ -30,11 +30,16 @@ contract TokenDistributionStrategy {
     crowdsale = _crowdsale;
   }
 
+  function returnUnsoldTokens(address _wallet) onlyCrowdsale {
+    
+  }
+
   function distributeTokens(address beneficiary, uint amount);
 
   function calculateTokenAmount(uint256 _weiAmount, address beneficiary) view returns (uint256 amount);
 
   function getToken() view returns(ERC20);
 
+  
 
 }

@@ -36,15 +36,20 @@ contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionSt
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 6 days,0));
   }
 
-  function returnUnsoldTokens(address _wallet) returns (bool) {
-    require(msg.sender == crowdsale);
+  function returnUnsoldTokens(address _wallet) onlyCrowdsale {
+    require(crowdsale.endTime() <= now);
     if (token.balanceOf(this) == 0) {
       UnsoldTokensReturned(_wallet,0);
-      return false;
+      return;
     }
-    token.transferFrom(this, _wallet, token.balanceOf(this));
-    UnsoldTokensReturned(_wallet, 0);
+    
+    uint256 balance = token.balanceOf(this).sub(totalContributed);
+    require(balance > 0);
 
+    if(token.transfer(_wallet, balance)) {
+      UnsoldTokensReturned(_wallet, balance);
+    }
+    
   }
 
 }
