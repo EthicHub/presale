@@ -14,7 +14,9 @@ import './EthixToken.sol';
  * Contributors registered to the whitelist will have better rates
  */
 contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionStrategy {
-  //TODO hardcoding of parameters
+  
+  event UnsoldTokensReturned(address indexed destination, uint256 amount);
+
 
   function EthicHubTokenDistributionStrategy(EthixToken _token, uint256 _rate, uint256 _rateForWhitelisted)
            WhitelistedDistributionStrategy(_token, _rate, _rateForWhitelisted)
@@ -26,12 +28,32 @@ contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionSt
 
   // Init intervals
   function initIntervals() onlyOwner validateIntervals  {
+
+    //For extra security, we check the owner of the crowdsale is the same of the owner of the distribution
+    require(owner == crowdsale.owner());
+
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 1 days,10));
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 2 days,8));
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 3 days,6));
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 4 days,4));
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 5 days,2));
     bonusIntervals.push(BonusInterval(crowdsale.startTime() + 6 days,0));
+  }
+
+  function returnUnsoldTokens(address _wallet) onlyCrowdsale {
+    require(crowdsale.endTime() <= now);
+    if (token.balanceOf(this) == 0) {
+      UnsoldTokensReturned(_wallet,0);
+      return;
+    }
+    
+    uint256 balance = token.balanceOf(this).sub(totalContributed);
+    require(balance > 0);
+
+    if(token.transfer(_wallet, balance)) {
+      UnsoldTokensReturned(_wallet, balance);
+    }
+    
   }
 
 }

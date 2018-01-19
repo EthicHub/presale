@@ -87,7 +87,6 @@ contract VestedTokenDistributionStrategy is Ownable, FixedPoolWithBonusTokenDist
    */
   function vestedAmount(address _beneficiary) public view returns (uint256) {
     uint256 totalBalance = contributions[_beneficiary];
-    //uint256 currentBalance = totalBalance.sub(released[_beneficiary]);
     //Duration("after",vestingStart.add(vestingDuration));
     if (now < vestingStart || vestingConfigured == false) {
       return 0;
