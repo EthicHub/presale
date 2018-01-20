@@ -16,8 +16,10 @@
     "chai-bignumber": "^2.0.2",
     "ethereumjs-testrpc": "^6.0.2",
     "solidity-coverage": "^0.4.0",
+    "temp": "^0.8.3",
     "truffle": "^4.0.1",
     "truffle-hdwallet-provider": "0.0.3",
+    "truffle-artifactor": "^3.0.2",
     "zeppelin-solidity": "git+https://github.com/EthicHub/zeppelin-solidity.git#develop"
   },
   "repository": {
@@ -39,5 +41,7 @@
     "url": "https://github.com/EthicHub/presale/issues"
   },
   "homepage": "https://github.com/EthicHub/presale#readme",
-  "dependencies": {}
+  "dependencies": {
+    "web3": "^1.0.0-beta.27"
+  }
 }
