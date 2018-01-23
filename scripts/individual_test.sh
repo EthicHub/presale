@@ -19,7 +19,7 @@ mainmenu () {
   if [ "$mainmenuinput" = "1" ]; then
             bash $SCRIPT_PATH test/EthicHubPresale.js
         elif [ "$mainmenuinput" = "2" ]; then
-            bash $SCRIPT_PATH test/CappedCompositeCrowdsale.js test/helpers/CappedCompositeCrowdsaleImpl.sol test/helpers/FixedPoolWithDiscountsTokenDistributionMock.sol
+            bash $SCRIPT_PATH test/CappedCompositeCrowdsale.js test/helpers/CappedCompositeCrowdsaleImpl.sol test/helpers/FixedPoolWithBonusTokenDistributionMock.sol
         elif [ "$mainmenuinput" = "3" ]; then
             bash $SCRIPT_PATH test/FixedPoolWithBonusTokenDistribution.js test/helpers/FixedPoolWithBonusTokenDistributionMock.sol
         elif [ "$mainmenuinput" = "4" ]; then

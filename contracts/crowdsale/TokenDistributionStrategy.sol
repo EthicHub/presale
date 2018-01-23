@@ -34,6 +34,9 @@ contract TokenDistributionStrategy {
     
   }
 
+  function whitelistRegisteredAmount(address beneficiary) view returns (uint256 amount) {
+  }
+
   function distributeTokens(address beneficiary, uint amount);
 
   function calculateTokenAmount(uint256 _weiAmount, address beneficiary) view returns (uint256 amount);

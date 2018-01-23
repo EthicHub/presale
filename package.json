@@ -42,6 +42,7 @@
   },
   "homepage": "https://github.com/EthicHub/presale#readme",
   "dependencies": {
+    "moment": "^2.20.1",
     "web3": "^1.0.0-beta.27"
   }
 }
