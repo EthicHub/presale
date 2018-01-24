@@ -1,7 +1,4 @@
 
-# NOTE: These contracts are in the auditing proccess, the presale or whitelist are not yet active.
-
-
 # EthicHub 1st Token Sale (presale.)
 
 These contracts model the presale of the ETHIX token to be used as the future mean to finance positive impact projects in the [Ethic Hub](https://ethichub.com) decentralized crowdlending platform.
@@ -77,9 +74,7 @@ If included in the
 
 #### Whitelists
 
-There will be a whitelist period open from {WHITELIST_PERIOD}.
-The whitelist will finish in {PRESALE_START - 2 days}.
-If the whitelist reached an exected investment amount of {GOAL}, the presale list will close.
+Whitelist closed.
 
 Investors that register will provide.
 - Valid email.
