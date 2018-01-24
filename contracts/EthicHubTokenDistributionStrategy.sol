@@ -54,6 +54,5 @@ contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionSt
       UnsoldTokensReturned(_wallet, balance);
     }
     
-  }
-
+  } 
 }
