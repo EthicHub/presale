@@ -74,7 +74,6 @@ contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, Refunda
         bool withinCap = weiRaised.add(msg.value) <= cap;
         bool nonZeroPurchase = msg.value != 0;
         return isWhitelisted && withinCap && nonZeroPurchase;
-        return withinCap && nonZeroPurchase;
     } else {
         return super.validPurchase();
     }
