@@ -4,7 +4,7 @@
 
 # EthicHub 1st Token Sale (presale.)
 
-These contracts model the presale of the ETX token to be used as the future mean to finance positive impact projects in the [Ethic Hub](https://ethichub.com) decentralized crowdlending platform.
+These contracts model the presale of the ETHIX token to be used as the future mean to finance positive impact projects in the [Ethic Hub](https://ethichub.com) decentralized crowdlending platform.
 
 
 There are 4 planed token sales. 15% of the tokens are planned to be sold in each Token Sale, 13% for Investors and 2% for Bounties.
@@ -19,9 +19,10 @@ _In order to receive the tokens_, investors will have to pass a KYC proccess.
 
 # Dates:
 The presale or 1st Token sale will
-- Start accepting purchases in {PRESALE_START}
-- Stop in {PRESALE_START + 30 days} date.
--
+- Start accepting whitelisted purchases on Wednesday, 7th of February, 14:00 CET (UTC+1h)
+- Start accepting all purchases in Thursday, 8th of February, 14:00 CET (UTC+1h)
+- Stop in Saturday, 10th of March, 14:00 CET (UTC+1h) (30 days after start date) or when the hardcap reached.
+
 
 # Milestones:
 - The minimum amount of funds needed to consider the presale valid is 654 ETH
@@ -88,6 +89,10 @@ After that, they will have to pass the KYC proccess in order to receive the toke
 
 When the 1st token sale starts, if the investors buy tokens with the same wallet registered in the presale sending an equal or higher amount of ethers than stated previously, _they will get a 20% discount purchasing tokens_ (not accumulable with they day discounts described previously).
 
+The crowdsale contracts will accept only whitelisted purchases from Wednesday, 7th of February, 14:00 CET (UTC+1h) for 24h. After that all purchases will be allowed.
+
+Joining the whitelist does not mean the tokens are reserved.
+
 <a name="token vesting"> # Token vesting </a>
 
 - Ethix Tokens will not be sent to the investors wallet inmediately after purchase.
@@ -112,8 +117,8 @@ The Ethic Hub team will have 2 years vesting of their tokens with 6 months cliff
 # Security considerations:
 
 The smart contracts are audited by:
--
-...
+- [Jakub Wojciechowski](https://www.linkedin.com/in/jakub-wojciechowski-5901b68)
+
 
 
 The funds will be stored in a [Gnosis multisig wallet](https://wallet-website.gnosis.pm/) if the minimum amount of funds is reached.
