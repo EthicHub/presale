@@ -9,6 +9,8 @@ import './VestedTokenDistributionStrategy.sol';
  *
  */
 contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStrategy {
+    uint256 public constant maximumBidAllowed = 500 ether;
+
     uint256 rate_for_investor;
     mapping(address=>uint) public registeredAmount;
 
@@ -22,12 +24,13 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
     /**
      * @dev Changes registration status of an address for participation.
      * @param target Address that will be registered/deregistered.
-     * @param amount the amount of eht to invest for a investor discount.
+     * @param amount the amount of eht to invest for a investor bonus.
      */
     function changeRegistrationStatus(address target, uint256 amount)
         public
         onlyOwner
     {
+        require(amount <= maximumBidAllowed);
         registeredAmount[target] = amount;
         if (amount > 0){
             RegistrationStatusChanged(target, true);
@@ -39,12 +42,13 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
     /**
      * @dev Changes registration statuses of addresses for participation.
      * @param targets Addresses that will be registered/deregistered.
-     * @param amounts the list of amounts of eth for every investor to invest for a investor discount.
+     * @param amounts the list of amounts of eth for every investor to invest for a investor bonus.
      */
     function changeRegistrationStatuses(address[] targets, uint256[] amounts)
         public
         onlyOwner
     {
+        require(targets.length == amounts.length);
         for (uint i = 0; i < targets.length; i++) {
             changeRegistrationStatus(targets[i], amounts[i]);
         }
@@ -52,7 +56,7 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
 
     /**
      * @dev overriding calculateTokenAmount for whilelist investors
-     * @return discounted rate if it applies for the investor,
+     * @return bonus rate if it applies for the investor,
      * otherwise, return token amount according to super class
      */
 
@@ -62,5 +66,15 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
         } else{
             tokens = super.calculateTokenAmount(_weiAmount, beneficiary);
         }
+    }
+
+    /**
+     * @dev getRegisteredAmount for whilelist investors
+     * @return registered amount if it applies for the investor,
+     * otherwise, return 0 
+     */
+
+    function whitelistRegisteredAmount(address beneficiary) view returns (uint256 amount) {
+        amount = registeredAmount[beneficiary];
     }
 }

@@ -48,11 +48,13 @@ const TOKEN_SOLD_PERCENTAGE = 20;
 
 module.exports = function(deployer,network, accounts) {
   console.log("--> Retrieving token");
-
-  EthixToken.deployed().then(function(token) {
-    if (network === "development") {
+  if (network === "development") {
       network = "develop";
-    }
+      console.log("TestRPC/Ganache network, not deploying for tests");
+      return;
+  }
+  EthixToken.deployed().then(function(token) {
+    
     const config = configurations[network];
     console.log("--> Deploying Token...");
     TokenDistributionStrategy.deployed().then((distribution) => {

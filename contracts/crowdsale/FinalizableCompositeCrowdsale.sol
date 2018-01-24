@@ -1,7 +1,6 @@
 pragma solidity ^0.4.18;
 
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './CompositeCrowdsale.sol';
 
 /**
@@ -9,7 +8,7 @@ import './CompositeCrowdsale.sol';
  * @dev Extension of CompositeCrowdsale where an owner can do extra work
  * after finishing.
  */
-contract FinalizableCompositeCrowdsale is CompositeCrowdsale, Ownable {
+contract FinalizableCompositeCrowdsale is CompositeCrowdsale {
   using SafeMath for uint256;
 
   bool public isFinalized = false;

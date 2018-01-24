@@ -9,9 +9,10 @@ import 'zeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import './EthixToken.sol';
 
 contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, RefundableCompositeCrowdsale {
-  //TODO hardcoding of parameters
+
   uint256 public constant minimumBidAllowed = 0.1 ether;
   uint256 public constant maximumBidAllowed = 500 ether;
+  uint256 public constant WHITELISTED_PREMIUM_TIME = 1 days;
 
 
   mapping(address=>uint) public participated;
@@ -60,5 +61,29 @@ contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, Refunda
   */
   function getInvestedAmount(address investor) view public returns(uint investedAmount){
     investedAmount = participated[investor];
+  }
+
+  // overriding Crowdsale#validPurchase to add extra cap logic
+  // whitelisted user can purchase tokens one day before the ico stated
+  // @return true if investors can buy at the moment
+  function validPurchase() internal view returns (bool) {
+    // whitelist exclusive purchasing time
+    if ((now >= startTime.sub(WHITELISTED_PREMIUM_TIME)) && (now <= startTime)){
+        uint256 registeredAmount = tokenDistribution.whitelistRegisteredAmount(msg.sender);
+        bool isWhitelisted = registeredAmount > 0;
+        bool withinCap = weiRaised.add(msg.value) <= cap;
+        bool nonZeroPurchase = msg.value != 0;
+        return isWhitelisted && withinCap && nonZeroPurchase;
+    } else {
+        return super.validPurchase();
+    }
+  }
+
+  /**
+  * When the crowdsale is finished, we send the remaining tokens back to the wallet
+  */
+  function finalization() internal {
+    super.finalization();
+    tokenDistribution.returnUnsoldTokens(wallet);
   }
 }

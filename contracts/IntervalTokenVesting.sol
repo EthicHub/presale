@@ -10,17 +10,14 @@ import 'zeppelin-solidity/contracts/math/SafeMath.sol';
  * @dev A token holder contract that can release its token balance gradually like a
  * typical vesting scheme, with a period duration and number of periods. Optionally revocable by the
  * owner.
-<<<<<<< HEAD
  * Team vesting contracts
-=======
->>>>>>> master
  */
 contract IntervalTokenVesting is Ownable {
   using SafeMath for uint256;
   using SafeERC20 for ERC20Basic;
 
   event Released(uint256 amount);
-  event Revoked();
+  event Revoked(uint256 refundValue, address tokenAddress);
 
   // beneficiary of tokens after they are released
   address public beneficiary;
@@ -47,6 +44,8 @@ contract IntervalTokenVesting is Ownable {
     require(_beneficiary != address(0));
     require(_periodDuration > 0);
     require(_numPeriods > 0 );
+    require(_numPeriods <= 10 );
+    require(_start >= now);
 
     beneficiary = _beneficiary;
     revocable = _revocable;
@@ -63,6 +62,7 @@ contract IntervalTokenVesting is Ownable {
     uint256 unreleased = releasableAmount(token);
 
     require(unreleased > 0);
+    require(!revoked[token]);
 
     released[token] = released[token].add(unreleased);
 
@@ -89,14 +89,14 @@ contract IntervalTokenVesting is Ownable {
 
     token.safeTransfer(owner, refund);
 
-    Revoked();
+    Revoked(refund, address(token));
   }
 
   /**
    * @dev Calculates the amount that has already vested but hasn't been released yet.
    * @param token ERC20 token which is being vested
    */
-  function releasableAmount(ERC20Basic token) public constant returns (uint256) {
+  function releasableAmount(ERC20Basic token) public view returns (uint256) {
     return vestedAmount(token).sub(released[token]);
   }
 
@@ -104,7 +104,7 @@ contract IntervalTokenVesting is Ownable {
    * @dev Calculates the amount that has already vested.
    * @param token ERC20 token which is being vested
    */
-  function vestedAmount(ERC20Basic token) public constant returns (uint256) {
+  function vestedAmount(ERC20Basic token) public view returns (uint256) {
     uint256 currentBalance = token.balanceOf(this);
     uint256 totalBalance = currentBalance.add(released[token]);
     uint256 vestedPeriods = 0;
@@ -112,11 +112,18 @@ contract IntervalTokenVesting is Ownable {
         return totalBalance;
     }
     for(uint i=numPeriods; i>=1; i--){
-        if (now >= start + periodDuration.mul(i)){
+        if (now >= start.add(periodDuration.mul(i))){
             vestedPeriods = i;
             break;
         }
     }
     return totalBalance.mul(vestedPeriods).div(numPeriods);
+  }
+  function drainToken(ERC20Basic token) external onlyOwner {
+    token.safeTransfer(owner, token.balanceOf(this));
+  }
+
+  function drainEth() external onlyOwner {
+    owner.transfer(this.balance);
   }
 }
