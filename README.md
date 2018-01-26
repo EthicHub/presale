@@ -5,7 +5,7 @@ These contracts model the presale of the ETHIX token to be used as the future me
 
 
 There are 4 planed token sales. 15% of the tokens are planned to be sold in each Token Sale, 13% for Investors and 2% for Bounties.
-Tokens not sold on each Token Sale will be sold in following ---> Token Sales or kept as . <--
+Tokens not sold on each Token Sale will be sold in following token sales.
 Price for the 2nd Token Sale will be 4x the price of the presale or 1st Token Sale.
 Tokens of presale or 1st Token Sale and 2nd Token Sale will be gradually realesed after 2nd Token Sale.
 3rd and 4th Token Sales price will be set up by [Vitalik Butterin Interactive Coin Offering Mechanism](https://drive.google.com/viewerng/viewer?url=https://people.cs.uchicago.edu/~teutsch/papers/ico.pdf).
@@ -22,10 +22,10 @@ The presale or 1st Token sale will
 
 
 # Milestones:
-- The minimum amount of funds needed to consider the presale valid is 654 ETH
+- The minimum amount of funds needed to consider the presale valid is 500 ETH
 If this value is not reached before the presale end date, the funds will be claimable by the investors and they will be refunded.
 
-- The presale's hard cap is 1,845 ETH. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
+- The presale's hard cap is 2000 ETH. If that amount is reached the presale will be considered finished and no more purchases will be accepted.
 
 
 
@@ -56,7 +56,7 @@ _The tokens will be sent to the investors AFTER the end of the 1st Token Sale da
 
 #### Price
 
-- For the Presale of 1st Token Sale the rate will be of 4000 tokens per ether.
+- For the Presale of 1st Token Sale the rate will be of 5000 tokens per ether.
 
 There will be a discount for early purchases, following this table:
 
@@ -82,7 +82,7 @@ Investors that register will provide.
 
 After that, they will have to pass the KYC proccess in order to receive the tokens and register an ERC20 token compatible wallet.
 
-When the 1st token sale starts, if the investors buy tokens with the same wallet registered in the presale sending an equal or higher amount of ethers than stated previously, _they will get a 20% discount purchasing tokens_ (not accumulable with they day discounts described previously).
+When the 1st token sale starts, if the investors buy tokens with the same wallet registered in the presale sending an equal or higher amount of ethers than stated previously, _they will get a 30% discount purchasing tokens_ (not accumulable with they day discounts described previously).
 
 The crowdsale contracts will accept only whitelisted purchases from Wednesday, 7th of February, 14:00 CET (UTC+1h) for 24h. After that all purchases will be allowed.
 
@@ -92,8 +92,8 @@ Joining the whitelist does not mean the tokens are reserved.
 
 - Ethix Tokens will not be sent to the investors wallet inmediately after purchase.
 -The vesting period for the tokens sold during the presale or 1st Token Sale after the presale will start when the next token sale or 2nd Token Sale ends.
-- 2nd Token sale will start about 200 days after the end of the presale or 1st Token Sale after the presale
-The vesting period will end 100 days after.
+- 2nd Token sale will start in Q3 2018.
+The vesting period will end 100 days after 2nd Token Sale ends
 
 
 The token release schedule will be 100 days long with 10 token sending events, corresponding to :
