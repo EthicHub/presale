@@ -9,7 +9,7 @@ import 'zeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import './EthixToken.sol';
 
 contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, RefundableCompositeCrowdsale {
-  //TODO hardcoding of parameters
+
   uint256 public constant minimumBidAllowed = 0.1 ether;
   uint256 public constant maximumBidAllowed = 500 ether;
   uint256 public constant WHITELISTED_PREMIUM_TIME = 1 days;
@@ -74,7 +74,6 @@ contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, Refunda
         bool withinCap = weiRaised.add(msg.value) <= cap;
         bool nonZeroPurchase = msg.value != 0;
         return isWhitelisted && withinCap && nonZeroPurchase;
-        return withinCap && nonZeroPurchase;
     } else {
         return super.validPurchase();
     }
