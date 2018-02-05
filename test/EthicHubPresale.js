@@ -310,6 +310,11 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       let amount = await this.tokenDistribution.calculateTokenAmount(ether(400), investor, {from: investor}).should.be.fulfilled;
       console.log("Amount:" + amount);
       await this.crowdsale.buyTokens(investor, {value: ether(400), from: investor}).should.be.fulfilled;
+      // test new getTokenContribution
+      let investorContribution = await this.tokenDistribution.getTokenContribution(investor);
+      console.log("investorContribution :" + investorContribution );
+      amount.should.bignumber.equal(investorContribution);
+
       
       //await this.crowdsale.send(moreThanGoal);
       await increaseTimeTo(this.endTime + duration.days(1));
