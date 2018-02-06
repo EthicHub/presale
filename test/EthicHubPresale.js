@@ -57,9 +57,6 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
     it('should fulfilled initiate with intervals token distribution', async function () {
       await this.tokenDistribution.initIntervals().should.be.fulfilled;
-    })
-    it('should fulfilled initiate with intervals token distribution', async function () {
-      await this.tokenDistribution.initIntervals().should.be.fulfilled;
       await this.tokenDistribution.initIntervals().should.be.rejectedWith(EVMRevert);
     })
 
@@ -122,7 +119,22 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       await this.crowdsale.buyTokens(investor, {value: amount, from: investor}).should.be.rejectedWith(EVMRevert);
 
     });
+  });
 
+  describe('whitelist purchasing', function () {
+    it('should reject buying before the starttime for no whitelisted investors', async function () {
+      await this.tokenDistribution.initIntervals();
+      await increaseTimeTo(this.startTime - duration.hours(2));
+      await this.tokenDistribution.changeRegistrationStatus(investor, ether(5));
+      await this.crowdsale.buyTokens(investor2, {value: ether(5), from: investor2}).should.be.rejectedWith(EVMRevert);
+    });
+
+    it('should accept buying one day before the starttime for whitelisted investors', async function () {
+      await this.tokenDistribution.initIntervals();
+      await increaseTimeTo(this.startTime - duration.hours(2));
+      await this.tokenDistribution.changeRegistrationStatus(investor, ether(5));
+      await this.crowdsale.buyTokens(investor, {value: ether(5), from: investor}).should.be.fulfilled
+    });
   });
 
   describe('proving the intervals of the distribution', function () {
@@ -298,6 +310,11 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       let amount = await this.tokenDistribution.calculateTokenAmount(ether(400), investor, {from: investor}).should.be.fulfilled;
       console.log("Amount:" + amount);
       await this.crowdsale.buyTokens(investor, {value: ether(400), from: investor}).should.be.fulfilled;
+      // test new getTokenContribution
+      let investorContribution = await this.tokenDistribution.getTokenContribution(investor);
+      console.log("investorContribution :" + investorContribution );
+      amount.should.bignumber.equal(investorContribution);
+
       
       //await this.crowdsale.send(moreThanGoal);
       await increaseTimeTo(this.endTime + duration.days(1));

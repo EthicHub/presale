@@ -175,7 +175,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, investo
     });
 
 
-    it('should compensate if beneficiary', async function() {
+    it('should not compensate if beneficiary', async function() {
       await this.tokenDistribution.configureVesting(this.vestingStart,this.vestingDuration);
       const investmentAmount = ether(1);
 
@@ -183,7 +183,7 @@ contract('CompositeCrowdsale', function ([owner,_, thirdParty, investor, investo
       const amount = await this.tokenDistribution.calculateTokenAmount(investmentAmount, investor);
       increaseTimeTo(this.vestingStart + this.vestingDuration);
 
-      await this.tokenDistribution.compensate(investor, {from:investor}).should.be.fulfilled;
+      await this.tokenDistribution.compensate(investor, {from:investor}).should.be.rejectedWith(EVMRevert);
     });
 
     it('should compensate if beneficiary', async function() {

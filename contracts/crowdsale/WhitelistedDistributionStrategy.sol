@@ -67,4 +67,14 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
             tokens = super.calculateTokenAmount(_weiAmount, beneficiary);
         }
     }
+
+    /**
+     * @dev getRegisteredAmount for whilelist investors
+     * @return registered amount if it applies for the investor,
+     * otherwise, return 0 
+     */
+
+    function whitelistRegisteredAmount(address beneficiary) view returns (uint256 amount) {
+        amount = registeredAmount[beneficiary];
+    }
 }
