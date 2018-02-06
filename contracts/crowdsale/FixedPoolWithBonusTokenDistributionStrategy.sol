@@ -90,6 +90,10 @@ contract FixedPoolWithBonusTokenDistributionStrategy is TokenDistributionStrateg
     }
   }
 
+  function getTokenContribution(address _beneficiary) view returns(uint256){
+    return contributions[_beneficiary];
+  }
+
   function getToken() view returns(ERC20) {
     return token;
   }
