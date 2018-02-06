@@ -22,6 +22,7 @@ module.exports = function(deployer,network, accounts) {
       console.log("TestRPC/Ganache network, not deploying for tests");
       return;
   }
+  const config = configurations[network];
   EthixToken.deployed().then(function(token) {
     token.balanceOf(accounts[0]).then((restOfTheTokens) => {
       console.log("--> Transfering the remaining "+restOfTheTokens+" to multisig");
