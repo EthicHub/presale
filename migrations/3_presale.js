@@ -41,10 +41,17 @@ const configurations = {
     cap: ether(2),
     wallet: "0x821aea9a577a9b44299b9c15c88cf3087f3b5544",
 
+  },
+  deploy: {
+    start_date: () => { return 1518008400},
+    end_date: () => { return 1520600400 },
+    goal: ether(500),
+    cap: ether(2000),
+    wallet: "",
   }
 }
 
-const TOKEN_SOLD_PERCENTAGE = 20;
+const TOKEN_SOLD_PERCENTAGE = 14.5;
 
 module.exports = function(deployer,network, accounts) {
   console.log("--> Retrieving token");
