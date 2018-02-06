@@ -22,8 +22,8 @@ const EthicHubPresale = artifacts.require('EthicHubPresale');
 contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, investor4, investor5, investor6, investor7, investor8, wallet]) {
 
   const RATE = new BigNumber(4000);
-  const cap = ether(3000);
-  const goal = ether(800);
+  const cap = ether(700);
+  const goal = ether(500);
   const whitelistRate = new BigNumber(5000);
   const moreThanGoal = ether(1000);
 
@@ -205,11 +205,13 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
         whitelistRate.mul(ether(5)).should.be.bignumber.equal(tokens);
 
         await increaseTimeTo(this.startTime + duration.days(1))
-        await this.crowdsale.buyTokens(investor2, {value: ether(200), from: investor2}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor2, {value: ether(100), from: investor2}).should.be.fulfilled;
         await increaseTimeTo(this.startTime + duration.days(1.5))
-        await this.crowdsale.buyTokens(investor3, {value: ether(300), from: investor3}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor3, {value: ether(100), from: investor3}).should.be.fulfilled;
         await increaseTimeTo(this.startTime + duration.days(2.5))
-        await this.crowdsale.buyTokens(investor4, {value: ether(400), from: investor4}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor4, {value: ether(100), from: investor4}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor5, {value: ether(100), from: investor5}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor6, {value: ether(100), from: investor6}).should.be.fulfilled;
 
         await increaseTimeTo(this.endTime + duration.days(4))
         await this.crowdsale.finalize().should.be.fulfilled;
@@ -231,8 +233,10 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
         let tokens = await this.tokenDistribution.calculateTokenAmount(ether(4), investor, {from: investor}).should.be.fulfilled;
         RATE.mul(ether(4).mul(1.1)).should.be.bignumber.equal(tokens);
 
-        await this.crowdsale.buyTokens(investor2, {value: ether(400), from: investor2}).should.be.fulfilled;
-        await this.crowdsale.buyTokens(investor3, {value: ether(500), from: investor3}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor2, {value: ether(100), from: investor2}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor3, {value: ether(100), from: investor3}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor4, {value: ether(100), from: investor4}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor5, {value: ether(100), from: investor5}).should.be.fulfilled;
 
         await increaseTimeTo(this.endTime + duration.days(4))
         await this.crowdsale.finalize().should.be.fulfilled;
@@ -304,12 +308,14 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
     it('should have a succesfull crowdsale not reaching cap and compensating vested tokens', async function(){
 
       await increaseTimeTo(this.startTime + duration.days(1));
+      await this.crowdsale.buyTokens(investor2, {value: ether(100), from: investor2}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor3, {value: ether(100), from: investor3}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor4, {value: ether(100), from: investor4}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor5, {value: ether(100), from: investor5}).should.be.fulfilled;
 
-      await this.crowdsale.buyTokens(investor2, {value: ether(500), from: investor2}).should.be.fulfilled;
-
-      let amount = await this.tokenDistribution.calculateTokenAmount(ether(400), investor, {from: investor}).should.be.fulfilled;
+      let amount = await this.tokenDistribution.calculateTokenAmount(ether(100), investor, {from: investor}).should.be.fulfilled;
       console.log("Amount:" + amount);
-      await this.crowdsale.buyTokens(investor, {value: ether(400), from: investor}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor, {value: ether(100), from: investor}).should.be.fulfilled;
       // test new getTokenContribution
       let investorContribution = await this.tokenDistribution.getTokenContribution(investor);
       console.log("investorContribution :" + investorContribution );
@@ -367,9 +373,13 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       console.log( await this.token.balanceOf(wallet));
       await increaseTimeTo(this.startTime + duration.days(1));
 
-      await this.crowdsale.buyTokens(investor2, {value: ether(500), from: investor2}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor2, {value: ether(100), from: investor2}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor3, {value: ether(100), from: investor3}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor4, {value: ether(100), from: investor4}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor5, {value: ether(100), from: investor5}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor6, {value: ether(100), from: investor6}).should.be.fulfilled;
 
-      await this.crowdsale.buyTokens(investor, {value: ether(400), from: investor}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor, {value: ether(100), from: investor}).should.be.fulfilled;
       
       //await this.crowdsale.send(moreThanGoal);
       await increaseTimeTo(this.endTime + duration.days(1));
@@ -379,36 +389,45 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
       await increaseTimeTo(this.vestingTime + duration.days(230));
       await this.tokenDistribution.compensate(investor).should.be.fulfilled;
       await this.tokenDistribution.compensate(investor2).should.be.fulfilled;
+      await this.tokenDistribution.compensate(investor3).should.be.fulfilled;
+      await this.tokenDistribution.compensate(investor4).should.be.fulfilled;
+      await this.tokenDistribution.compensate(investor5).should.be.fulfilled;
+      await this.tokenDistribution.compensate(investor6).should.be.fulfilled;
 
       let balanceInvestor1 = await this.token.balanceOf(investor);
       let balanceInvestor2 = await this.token.balanceOf(investor2);
+      let balanceInvestor3 = await this.token.balanceOf(investor3);
+      let balanceInvestor4 = await this.token.balanceOf(investor4);
+      let balanceInvestor5 = await this.token.balanceOf(investor5);
+      let balanceInvestor6 = await this.token.balanceOf(investor6);
       let balanceWallet = await this.token.balanceOf(wallet);
+
       console.log("Subr");
       console.log(this.presaleSupply.sub(balanceInvestor1).sub(balanceInvestor2) );
       console.log("Wallet token balance before");
       console.log( balanceWallet);
-      balanceWallet.should.be.bignumber.equal(this.presaleSupply.sub(balanceInvestor1).sub(balanceInvestor2));
+      balanceWallet.should.be.bignumber.equal(this.presaleSupply.sub(balanceInvestor1).sub(balanceInvestor2).sub(balanceInvestor3).sub(balanceInvestor4).sub(balanceInvestor5).sub(balanceInvestor6));
 
     });
 
     it('should have a succesfull crowdsale reaching cap, rejecting further buys and compensating vested tokens', async function(){
-        await this.tokenDistribution.changeRegistrationStatus(investor, ether(200))
+        await this.tokenDistribution.changeRegistrationStatus(investor, ether(100))
         await increaseTimeTo(this.startTime + duration.days(0.5))
-        await this.crowdsale.buyTokens(investor, {value: ether(200), from: investor}).should.be.fulfilled;
-        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(200), investor, {from: investor}).should.be.fulfilled;
+        await this.crowdsale.buyTokens(investor, {value: ether(100), from: investor}).should.be.fulfilled;
+        let tokens = await this.tokenDistribution.calculateTokenAmount(ether(100), investor, {from: investor}).should.be.fulfilled;
         var investorTokens = [tokens];
-        await this.crowdsale.buyTokens(investor2, {value: ether(500), from: investor2}).should.be.fulfilled;
-        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(500),investor2, {from: investor2}));
-        await this.crowdsale.buyTokens(investor3, {value: ether(500), from: investor3}).should.be.fulfilled;
-        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(500),investor3, {from: investor3}));
-        await this.crowdsale.buyTokens(investor4, {value: ether(500), from: investor4}).should.be.fulfilled;
-        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(500),investor4, {from: investor4}));
-        await this.crowdsale.buyTokens(investor5, {value: ether(500), from: investor5}).should.be.fulfilled;
-        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(500),investor5, {from: investor5}));
-        await this.crowdsale.buyTokens(investor6, {value: ether(500), from: investor6}).should.be.fulfilled;
-        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(500),investor6, {from: investor6}));
-        await this.crowdsale.buyTokens(investor7, {value: ether(300), from: investor7}).should.be.fulfilled;
-        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(300),investor7, {from: investor7}));
+        await this.crowdsale.buyTokens(investor2, {value: ether(100), from: investor2}).should.be.fulfilled;
+        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(100),investor2, {from: investor2}));
+        await this.crowdsale.buyTokens(investor3, {value: ether(100), from: investor3}).should.be.fulfilled;
+        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(100),investor3, {from: investor3}));
+        await this.crowdsale.buyTokens(investor4, {value: ether(100), from: investor4}).should.be.fulfilled;
+        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(100),investor4, {from: investor4}));
+        await this.crowdsale.buyTokens(investor5, {value: ether(100), from: investor5}).should.be.fulfilled;
+        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(100),investor5, {from: investor5}));
+        await this.crowdsale.buyTokens(investor6, {value: ether(100), from: investor6}).should.be.fulfilled;
+        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(100),investor6, {from: investor6}));
+        await this.crowdsale.buyTokens(investor7, {value: ether(100), from: investor7}).should.be.fulfilled;
+        investorTokens.push(await this.tokenDistribution.calculateTokenAmount(ether(100),investor7, {from: investor7}));
 
         // cap reached should reject
         await this.crowdsale.buyTokens(investor8, {value: ether(100), from: investor8}).should.be.rejectedWith(EVMRevert);
@@ -434,7 +453,11 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
     it('should be pausable', async function(){
       await increaseTimeTo(this.startTime + duration.days(1));
-      await this.crowdsale.buyTokens(investor2, {value: ether(500), from: investor2}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor2, {value: ether(100), from: investor2}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor3, {value: ether(100), from: investor3}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor4, {value: ether(100), from: investor4}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor5, {value: ether(100), from: investor5}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor6, {value: ether(100), from: investor6}).should.be.fulfilled;
 
       await this.crowdsale.pause({from: owner}).should.be.fulfilled;
       // can not invest more tokens from now
@@ -454,12 +477,11 @@ contract('EthicHubPresale', function ([owner ,investor, investor2, investor3, in
 
     it('check user invested amount', async function(){
       await increaseTimeTo(this.startTime + duration.days(1));
-      await this.crowdsale.buyTokens(investor, {value: ether(100), from: investor}).should.be.fulfilled;
-      await this.crowdsale.buyTokens(investor, {value: ether(10), from: investor}).should.be.fulfilled;
-      await this.crowdsale.buyTokens(investor, {value: ether(200), from: investor}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor, {value: ether(98), from: investor}).should.be.fulfilled;
+      await this.crowdsale.buyTokens(investor, {value: ether(1), from: investor}).should.be.fulfilled;
 
       const invested = await this.crowdsale.getInvestedAmount(investor).should.be.fulfilled;
-      invested.should.be.bignumber.equal(ether(310));
+      invested.should.be.bignumber.equal(ether(99));
       //await this.crowdsale.claimRefund({from:investor}).should.be.fulfilled;
     })
 
