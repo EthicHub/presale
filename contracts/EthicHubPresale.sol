@@ -11,7 +11,7 @@ import './EthixToken.sol';
 contract EthicHubPresale is Ownable, Pausable, CappedCompositeCrowdsale, RefundableCompositeCrowdsale {
 
   uint256 public constant minimumBidAllowed = 0.1 ether;
-  uint256 public constant maximumBidAllowed = 500 ether;
+  uint256 public constant maximumBidAllowed = 100 ether;
   uint256 public constant WHITELISTED_PREMIUM_TIME = 1 days;
 
 
