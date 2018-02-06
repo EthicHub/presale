@@ -2,8 +2,8 @@ const Presale = artifacts.require('EthicHubPresale.sol');
 const TokenDistributionStrategy = artifacts.require('EthicHubTokenDistributionStrategy.sol');
 const EthixToken = artifacts.require('EthixToken.sol');
 
-const RATE = new web3.BigNumber(6666);
-const WHITELIST_RATE = RATE.mul(20).div(100).add(RATE);
+const RATE = new web3.BigNumber(5000);
+const WHITELIST_RATE = RATE.mul(30).div(100).add(RATE);
 
 
 module.exports = function(deployer,network, accounts) {
