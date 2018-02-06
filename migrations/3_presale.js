@@ -81,11 +81,17 @@ module.exports = function(deployer,network, accounts) {
           const presaleSupply = supply.mul(TOKEN_SOLD_PERCENTAGE).div(100);
           console.log("--> Transfering tokens to TokenDistributionStrategy: "+presaleSupply);
           token.transfer(TokenDistributionStrategy.address, presaleSupply).then( () => {
-            console.log("--> Initializing intervals...");
-            distribution.initIntervals().then(() => {
-              distribution.getIntervals().then((intervals) => {
-               console.log(intervals);
-               console.log("--> Presale configured!")
+
+            token.balanceOf(accounts[0]).then((restOfTheTokens) => {
+              console.log("--> Transfering the remaining "+restOfTheTokens+" to multisig");
+              token.transfer(config.wallet, restOfTheTokens).then( () => {
+                console.log("--> Initializing intervals...");
+                distribution.initIntervals().then(() => {
+                  distribution.getIntervals().then((intervals) => {
+                   console.log(intervals);
+                   console.log("--> Presale configured!")
+                  });
+                });
               });
             });
           });
