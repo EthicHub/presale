@@ -27,11 +27,11 @@ function now() {
 
 const configurations = {
   rinkeby: {
-    start_date: () => { return (latestTime() + duration.minutes(15))},
-    end_date: () => { return (latestTime() + duration.days(7) + duration.seconds(2)) },
-    goal: ether(1),
-    cap: ether(2),
-    wallet: "0x4b9eaD77C85890477F3aCE286ddcaf9a342C33B4",
+    start_date: () => { return (latestTime() + duration.minutes(10))},
+    end_date: () => { return (latestTime() + duration.days(8) + duration.seconds(2)) },
+    goal: ether(0.5),
+    cap: ether(1),
+    wallet: "0xD2E416f6cCe2beb363A04B4d947213DdCa757EA0",
 
   },
   develop: {

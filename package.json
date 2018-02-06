@@ -18,8 +18,8 @@
     "solidity-coverage": "^0.4.0",
     "temp": "^0.8.3",
     "truffle": "^4.0.1",
-    "truffle-hdwallet-provider": "0.0.3",
     "truffle-artifactor": "^3.0.2",
+    "truffle-hdwallet-provider": "0.0.3",
     "zeppelin-solidity": "git+https://github.com/EthicHub/zeppelin-solidity.git#develop"
   },
   "repository": {
