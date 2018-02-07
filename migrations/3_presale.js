@@ -1,12 +1,20 @@
 const Presale = artifacts.require('EthicHubPresale.sol');
 const TokenDistributionStrategy = artifacts.require('EthicHubTokenDistributionStrategy.sol');
 const EthixToken = artifacts.require('EthixToken.sol');
+const Promise = require('bluebird');
 
 const moment = require('moment');
 
-function latestTime() {
-  return web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+if (typeof web3.eth.getAccountsPromise === 'undefined') {
+  Promise.promisifyAll(web3.eth, { suffix: 'Promise' });
 }
+
+function latestTime() {
+  return web3.getBlockNumberPromise()
+          .then(_blockNumber => web3.eth.getBlock(_blockNumber))
+          .then(_block => return _block.timestamp);
+}
+
 const duration = {
   seconds: function (val) { return val },
   minutes: function (val) { return val * this.seconds(60) },
@@ -27,8 +35,8 @@ function now() {
 
 const configurations = {
   rinkeby: {
-    start_date: () => { return (latestTime() + duration.minutes(10))},
-    end_date: () => { return (latestTime() + duration.days(8) + duration.seconds(2)) },
+    start_date: () => { return 1518005400 },
+    end_date: () => { return 1519948800 },
     goal: ether(0.5),
     cap: ether(1),
     wallet: "0xD2E416f6cCe2beb363A04B4d947213DdCa757EA0",
@@ -66,6 +74,7 @@ module.exports = function(deployer,network, accounts) {
     console.log("--> Deploying Token...");
     TokenDistributionStrategy.deployed().then((distribution) => {
       console.log("--> Deploying Presale...");
+
       deployer.deploy(Presale,
                         config.start_date(),
                         config.end_date(),
