@@ -41,7 +41,7 @@ contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionSt
   }
 
   function returnUnsoldTokens(address _wallet) onlyCrowdsale {
-    //require(crowdsale.endTime() <= now);
+    //require(crowdsale.endTime() <= now); //this made no sense
     if (token.balanceOf(this) == 0) {
       UnsoldTokensReturned(_wallet,0);
       return;

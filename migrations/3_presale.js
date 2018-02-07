@@ -49,12 +49,12 @@ const configurations = {
     wallet: "0x821aea9a577a9b44299b9c15c88cf3087f3b5544",
 
   },
-  deploy: {
+  live: {
     start_date: () => { return 1518008400},
     end_date: () => { return 1520600400 },
     goal: ether(500),
     cap: ether(2000),
-    wallet: "",
+    wallet: "0x8307df1d17ee7d58c6298cb3346c1c503fddcdf4",
   }
 }
 
@@ -94,12 +94,12 @@ module.exports = function(deployer,network, accounts) {
                 distribution.getIntervals().then((intervals) => {
                    console.log(intervals);
                    console.log("--> Presale configured!");
-                   token.balanceOf(accounts[0]).then((restOfTheTokens) => {
-                     console.log("--> Transfering the remaining "+restOfTheTokens+" to multisig");
-                     token.transfer(config.wallet, restOfTheTokens).then( () => {
-                       console.log("--> Tokens secured");
-                     });
-                   });
+//                   token.balanceOf(accounts[0]).then((restOfTheTokens) => {
+//                     console.log("--> Transfering the remaining "+restOfTheTokens+" to multisig");
+//                     token.transfer(config.wallet, restOfTheTokens).then( () => {
+//                       console.log("--> Tokens secured");
+//                     });
+//                   });
                 });
               });
           });
