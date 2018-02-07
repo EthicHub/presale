@@ -34,8 +34,8 @@ function now() {
 
 const configurations = {
   rinkeby: {
-    start_date: () => { return 1517964900 },
-    end_date: () => { return 1519948800 },
+    start_date: () => { return 1517971017 },
+    end_date: () => { return 1517972517 },
     goal: ether(0.5),
     cap: ether(1),
     wallet: "0xD2E416f6cCe2beb363A04B4d947213DdCa757EA0",
