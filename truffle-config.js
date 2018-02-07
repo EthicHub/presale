@@ -32,6 +32,14 @@ module.exports = {
       host: "localhost",
       port: 7545,
       network_id: "5777"
+    },
+    "live": {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, "https://mainnet.infura.io/")
+      },
+      network_id: 1,
+      gasLimit: 6000000,
+      gas: 5000000
     }
   }
 };
