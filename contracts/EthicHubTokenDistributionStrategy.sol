@@ -32,12 +32,12 @@ contract EthicHubTokenDistributionStrategy is Ownable, WhitelistedDistributionSt
     //For extra security, we check the owner of the crowdsale is the same of the owner of the distribution
     require(owner == crowdsale.owner());
 
-    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 1 days,10));
-    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 2 days,10));
-    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 3 days,8));
-    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 4 days,6));
-    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 5 days,4));
-    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 6 days,2));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 10 seconds,10));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 20 seconds,10));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 30 seconds,8));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 40 seconds,6));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 50 seconds,4));
+    bonusIntervals.push(BonusInterval(crowdsale.startTime() + 60 seconds,2));
   }
 
   function returnUnsoldTokens(address _wallet) onlyCrowdsale {

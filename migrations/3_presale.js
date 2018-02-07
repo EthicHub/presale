@@ -1,19 +1,18 @@
 const Presale = artifacts.require('EthicHubPresale.sol');
 const TokenDistributionStrategy = artifacts.require('EthicHubTokenDistributionStrategy.sol');
 const EthixToken = artifacts.require('EthixToken.sol');
-const Promise = require('bluebird');
 
 const moment = require('moment');
-
+/*
 if (typeof web3.eth.getAccountsPromise === 'undefined') {
   Promise.promisifyAll(web3.eth, { suffix: 'Promise' });
 }
-
+/*
 function latestTime() {
   return web3.getBlockNumberPromise()
           .then(_blockNumber => web3.eth.getBlock(_blockNumber))
           .then(_block => return _block.timestamp);
-}
+}*/
 
 const duration = {
   seconds: function (val) { return val },
@@ -35,7 +34,7 @@ function now() {
 
 const configurations = {
   rinkeby: {
-    start_date: () => { return 1518005400 },
+    start_date: () => { return 1517964900 },
     end_date: () => { return 1519948800 },
     goal: ether(0.5),
     cap: ether(1),
@@ -94,7 +93,13 @@ module.exports = function(deployer,network, accounts) {
               distribution.initIntervals().then(() => {
                 distribution.getIntervals().then((intervals) => {
                    console.log(intervals);
-                   console.log("--> Presale configured!")
+                   console.log("--> Presale configured!");
+                   token.balanceOf(accounts[0]).then((restOfTheTokens) => {
+                     console.log("--> Transfering the remaining "+restOfTheTokens+" to multisig");
+                     token.transfer(config.wallet, restOfTheTokens).then( () => {
+                       console.log("--> Tokens secured");
+                     });
+                   });
                 });
               });
           });
