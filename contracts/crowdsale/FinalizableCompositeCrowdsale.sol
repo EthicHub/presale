@@ -35,5 +35,6 @@ contract FinalizableCompositeCrowdsale is CompositeCrowdsale {
    * executed entirely.
    */
   function finalization() internal {
+    this.tokenDistribution.disposeOfUnsoldTokens();
   }
 }

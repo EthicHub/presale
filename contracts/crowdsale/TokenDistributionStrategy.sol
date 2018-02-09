@@ -12,7 +12,12 @@ contract TokenDistributionStrategy {
   using SafeMath for uint256;
 
   CompositeCrowdsale crowdsale;
+  UnsoldTokenHandler unsoldTokenHandler;
   uint256 rate;
+
+  constructor(UnsoldTokenHandler _unsoldTokenHandler) {
+    this.unsoldTokenHandler = unsoldTokenHandler;
+  }
 
   modifier onlyCrowdsale() {
     require(msg.sender == address(crowdsale));
@@ -30,8 +35,10 @@ contract TokenDistributionStrategy {
     crowdsale = _crowdsale;
   }
 
-  function returnUnsoldTokens(address _wallet) onlyCrowdsale {
+  function disposeOfUnsoldTokens() onlyCrowdsale {
+    uint256 balance = token.balanceOf(this).sub(totalContributed);
 
+    this.unsoldTokenHandler.disposeOfUnsoldTokens(balance);
   }
 
   function isContributorAccepted(address _contributor) view returns (boolean) {
@@ -43,7 +50,6 @@ contract TokenDistributionStrategy {
   function calculateTokenAmount(uint256 _weiAmount, address beneficiary) view returns (uint256 amount);
 
   function getToken() view returns(ERC20);
-
 
 
 }
