@@ -31,10 +31,11 @@ contract TokenDistributionStrategy {
   }
 
   function returnUnsoldTokens(address _wallet) onlyCrowdsale {
-    
+
   }
 
-  function whitelistRegisteredAmount(address beneficiary) view returns (uint256 amount) {
+  function isContributorAccepted(address _contributor) view returns (boolean) {
+    return true;
   }
 
   function distributeTokens(address beneficiary, uint amount);
@@ -43,6 +44,6 @@ contract TokenDistributionStrategy {
 
   function getToken() view returns(ERC20);
 
-  
+
 
 }

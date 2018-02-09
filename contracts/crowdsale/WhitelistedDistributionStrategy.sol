@@ -68,10 +68,18 @@ contract WhitelistedDistributionStrategy is Ownable, VestedTokenDistributionStra
         }
     }
 
+
+    function isContributorAccepted(address _contributor) view returns (boolean) {
+      return super.isContributorAccepted(_contributor) &&
+             whitelistRegisteredAmount(_contributor) > 0 &&
+             --> we should be having (now >= startTime.sub(WHITELISTED_PREMIUM_TIME)) && (now <= startTime))
+             here and take that ugly method out of EthicHubPresale,WHITELISTED_PREMIUM_TIME in the constructor <--
+    }
+
     /**
      * @dev getRegisteredAmount for whilelist investors
      * @return registered amount if it applies for the investor,
-     * otherwise, return 0 
+     * otherwise, return 0
      */
 
     function whitelistRegisteredAmount(address beneficiary) view returns (uint256 amount) {

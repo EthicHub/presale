@@ -67,7 +67,7 @@ contract CompositeCrowdsale is Ownable {
   function buyTokens(address beneficiary) payable {
     require(beneficiary != 0x0);
     require(validPurchase());
-
+    require(tokenDistribution.isContributorAccepted(beneficiary));
     uint256 weiAmount = msg.value;
 
     // calculate token amount to be created
