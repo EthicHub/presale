@@ -1,3 +1,6 @@
+# We moved to gitlab. [Check us here!](https://gitlab.com/EthicHub)
+
+
 
 # EthicHub 1st Token Sale (presale.)
 
